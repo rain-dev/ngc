@@ -96,3 +96,60 @@ template <bool bvalue> void print(my_class <bvalue> my_object)
 ```
 
 This example will yield an error when compiling, even we already known which branch of the classic if clause will be visited.
+
+#### Compile-time for
+
+```c++
+template <typename... types> void hello(std :: tuple <types...> everyone)
+{
+  for <size_t i = 0; i < sizeof...(types); i + 1>
+  {
+    std :: get <i> (everyone).hello();
+  }
+}
+```
+
+```c++
+template <size_t index, bool next> class hello_conditional_next;
+
+template <size_t index> class hello_conditional_next <index, true>
+{
+public:
+  template <typename... types> static inline void next(std :: tuple <types...>);
+};
+
+template <size_t index> class hello_conditional_next <index, false>
+{
+public:
+  template <typename... types> static inline void next(std :: tuple <types...>);
+};
+
+template <size_t index> class hello_iterator;
+
+template <size_t index> class hello_iterator
+{
+public:
+  template <typename... types> static inline void hello(std :: tuple <types...>);
+};
+
+template <size_t index> template <typename... types> inline void hello_conditional_next <index, true> :: next(std :: tuple <types...> everyone)
+{
+  hello_iterator <index + 1> :: hello(everyone);
+}
+
+template <size_t index> template <typename... types> inline void hello_conditional_next <index, false> :: next(std :: tuple <types...> everyone)
+{
+}
+
+template <size_t index> template <typename... types> inline void hello_iterator <index> :: hello(std :: tuple <types...> everyone)
+{
+  std :: get <index> (everyone).hello();
+  hello_conditional_next <index, (index < sizeof...(types) - 1)> :: next(everyone);
+}
+
+template <typename... types> void hello(std :: tuple <types...> everyone)
+{
+  hello_iterator <0> :: hello(everyone);
+}
+
+```
