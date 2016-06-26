@@ -159,3 +159,49 @@ template <typename... types> void hello(std :: tuple <types...> everyone)
 }
 
 ```
+
+#### The `has` construct
+
+<b>S</b>*ubstitution* <b>F</b>*ailure* <b>I</b>*s* <b>N</b>*ot* <b>A</b>*n* <b>E</b>*rror* is a powerful, powerful tool. It allows you to inspect a class at compile time, and behave consequently. You can get to know if a class has a member, a method, you can find out what what does a method return, anything, basically. <sup>2</sup>
+
+SFINAE constructs, however, are *so* unreadable. With the `has` construct, we made things much easier.
+
+```c++
+template <typename type> void optionally_walk(type walker)
+{
+  walk_if_you_can <type has void walk()> ();
+}
+```
+
+```c++
+template <typename type> class has_walk_method
+{
+    template <typename wtype, void (wtype :: *) ()> class has_walk_method_sfinae
+    {
+    };
+
+    template <typename wtype> static int8_t test(has_walk_method_sfinae <wtype, &wtype :: walk> *);
+    template <typename size_type> static int32_t test(...);
+
+  public:
+    static constexpr bool value = sizeof(test <type> (0)) == sizeof(int8_t);
+};
+
+template <typename type> void optionally_walk(type walker)
+{
+  walk_if_you_can <has_walk_method <type> :: value> (walker);
+}
+
+```
+
+The `has` construct lets you specify a wide variety of conditions. In the previous example, all the following would have been accepted:
+
+```c++
+walk_if_you_can <type has legs> (walker);
+walk_if_you_can <type has int legs> (walker);
+walk_if_you_can <type has static int legs> (walker);
+walk_if_you_can <type has static void walk()> (walker);
+walk_if_you_can <type has walk(int, double, char)> (walker);
+```
+
+<sup>2</sup> The only thing you cannot do is to *list* all members, methods, and so on in a class. But we thought about that as well. Read on!
