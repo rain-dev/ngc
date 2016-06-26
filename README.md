@@ -99,6 +99,12 @@ This example will yield an error when compiling, even we already known which bra
 
 #### Compile-time for
 
+We love *for*. It's all about saying how many times you want something done and getting it done *that many times*! Wow, machines are so patient.
+
+Non-type template parameters make it possible to do some operation on an object depending on the value of the parameters, at compile time. This means that you can do something for `0` and something completely different for `1`.
+
+Take `std :: tuple`, for example. `std :: get <0>` and `std :: get <1>` don't even have to return the same value. Now, what if we wanted to *loop* on something like `std :: get`? With templates, we can do that!
+
 ```c++
 template <typename... types> void hello(std :: tuple <types...> everyone)
 {
