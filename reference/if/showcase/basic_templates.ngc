@@ -1,0 +1,16 @@
+template <typename type> class c
+{
+  template <bool condition> void f();
+};
+
+template <typename type> template <bool condition> void c :: f()
+{
+  if <condition>
+  {
+    std :: cout << "Condition is true" << std :: endl;
+  }
+  else
+  {
+    std :: cout << "Condition if false" << std :: endl;
+  }
+}

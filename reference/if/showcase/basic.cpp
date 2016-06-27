@@ -1,4 +1,4 @@
-/* General scope forward injection point */
+/* Global scope forward injection point */
 
 struct __ngc_0_conditional_true__;
 struct __ngc_0_conditional_false__;
