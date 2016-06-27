@@ -6,7 +6,7 @@
 
 ## Highlights
 
-**C <>** extends C++ with a collection of new, awesome features. The core template features are focused on runtime performance and simplicity, allowing the programmer to easily master techniques that would require an extremely verbose, difficult to mantain, and hard to read code in C++. **C <>** also brings to C++ several fresh new constructs inspired from more modern programming languages like Javascript, Swift, but making them as performant as any other C++ construct.
+**C <>** extends C++ with a collection of new, awesome features. The core template features are focused on runtime performance and simplicity, allowing the programmer to easily master techniques that would require an extremely verbose, difficult to mantain, and hard to read code in C++. **C <>** also brings to C++ several fresh new constructs inspired from more modern programming languages like Javascript and Swift, but making them as performant as any other C++ construct.
 
 **C <>** is *fast* and *simple*. Here are some of its strong points.
 
@@ -95,7 +95,7 @@ template <bool bvalue> void print(my_class <bvalue> my_object)
 
 ```
 
-This example will yield an error when compiling, even we already known which branch of the classic if clause will be visited.
+This example will yield an error when compiling, even if we already know which branch of the classic if clause will be visited.
 
 #### Compile-time for
 
@@ -103,7 +103,7 @@ We love *for*. It's all about saying how many times you want something done and 
 
 Non-type template parameters make it possible to do some operation on an object depending on the value of the parameters, at compile time. This means that you can do something for `0` and something completely different for `1`.
 
-Take `std :: tuple`, for example. `std :: get <0>` and `std :: get <1>` don't even have to return the same value. Now, what if we wanted to *loop* on something like `std :: get`? With templates, we can do that!
+Take `std :: tuple`, for example. `std :: get <0>` and `std :: get <1>` don't even have to return the same type. Now, what if we wanted to *loop* on something like `std :: get`? With templates, we can do that!
 
 ```c++
 template <typename... types> void hello(std :: tuple <types...> everyone)
