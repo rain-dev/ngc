@@ -47,12 +47,12 @@ template <bool condition, typename true_type, typename false_type> struct __ngc_
 
 template <typename true_type, typename false_type> struct __ngc_conditional__ <true, true_type, false_type>
 {
-  typedef true_type true;
+  typedef true_type type;
 };
 
 template <typename true_type, typename false_type> struct __ngc_conditional__ <false, true_type, false_type>
 {
-  typedef false_type false;
+  typedef false_type type;
 };
 
 ```

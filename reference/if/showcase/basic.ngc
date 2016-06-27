@@ -1,0 +1,13 @@
+static constexpr bool value = true;
+
+void f()
+{
+  if <value>
+  {
+    std :: cout << "Value is true." << std :: endl;
+  }
+  else
+  {
+    std :: cout << "Value if false." << std :: endl;    
+  }
+}
