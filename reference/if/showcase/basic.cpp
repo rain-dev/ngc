@@ -7,27 +7,23 @@ struct __ngc_0_conditional_false__;
 
 static constexpr bool value = true;
 
-/* Pre-function f signature and implementation injection point */
+/* Pre-function f implementation injection point */
 
 struct __ngc_0_conditional_true__
 {
-  static inline void execute();
+  static inline void execute()
+  {
+    std :: cout << "Value is true" << std :: endl;
+  }
 };
 
 struct __ngc_0_conditional_false__
 {
-  static inline void execute();
+  static inline void execute()
+  {
+    std :: cout << "Value is false" << std :: endl;
+  }
 };
-
-void __ngc_0_conditional_true__ :: execute()
-{
-  std :: cout << "Value is true" << std :: endl;
-}
-
-void __ngc_0_conditional_false__ :: execute()
-{
-  std :: cout << "Value is false" << std :: endl;
-}
 
 /* Code */
 
