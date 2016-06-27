@@ -1,0 +1,15 @@
+template <bool condition> void f(int & n, int j, double x)
+{
+  const int k = 12;
+
+  if <condition>
+  {
+    n += k;
+  }
+  else
+  {
+    j++;
+  }
+
+  n /= (x + j);
+}
