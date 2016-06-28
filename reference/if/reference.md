@@ -178,3 +178,49 @@ class __ngc_id_conditional_false__
 
 template <> void f <0, int, false> () { /* ... */ }
 ```
+
+For examples, see `showcase/basic_templates.ngc` and `showcase/basic_templates.cpp`.
+
+#### `execute()` arguments
+
+The instructions inside the `if <>` clause need to be able to access the same variables as a regular `if()` statement would. Since the code is now wrapped inside an `execute()` function, it is necessary that all the variables that are used in either branch of the `if <>` clause will be passed by reference to both the `execute()` statements.
+
+**Remark**: please note that it is necessary to make the arguments for both `execute()` methods identical. As we will later see, `__ngc_id_conditional_true__` and `__ngc_id_conditional_false__` are selected with an `__ngc_conditional__`, and their `execute` statement is called with an identical call.
+
+Will be passed **as a reference** all and only the variables that are used in either branch of the `if <>` clause and that:
+
+ * Were passed as arguments to the function.
+ * Were defined in any scope in the function that contains the `if <>` clause.
+
+If the function has a non-`void` return value, and a `return` statement is specified in either of the branches of the `if <>` clause, then a `bool & __ngc_return__` parameter is added at the beginning of the list of parameters (see later for further reference).
+
+For examples, see `showcase/return.ngc` and `showcase/return.cpp`.
+
+#### Inside the `execute()`
+
+The body of the `execute()` method will be as follows:
+
+```c++
+execute()
+{
+  /* Templates and using (see later) */
+
+  {
+    /* if <> branch code */
+  }
+}
+```
+
+The `execute()` body is introduced by a set of `using` statements and `constexpr` declarations (see later for further reference). Then, an headless scope is introduced to separate the inner code of the `if <>` branch from the `using` statements and `constexpr` declarations.
+
+The additional headless scope is necessary to allow for redeclaration of variables whose name collide with a constexpr declaration without incurring in a redeclaration error.
+
+#### `using` statements
+
+It is necessary to make the namespace used uniform inside and outside the `if <>` clause. This is achieved by placing the `__ngc_id_conditional_true__` and `__ngc_id_conditional_false__` structs within the parent function scope. However, the accessible scope can be modified with an `using` statement.
+
+Therefore, **all** `using` statements in any scope of the function that contain the `if <>` clause will be copied at the beginning of the `execute()` method in the same order as they appear in the code.
+
+This will ensure that all the scopes accessible outside the code of the `if <>` will also be accessible inside it.
+
+For examples, see `showcase/using.ngc` and `showcase/using.cpp`.
