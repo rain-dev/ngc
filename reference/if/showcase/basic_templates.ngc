@@ -3,7 +3,7 @@ template <typename type> class c
   template <bool condition> void f();
 };
 
-template <typename type> template <bool condition> void c :: f()
+template <typename type> template <bool condition> void c <type> :: f()
 {
   if <condition>
   {

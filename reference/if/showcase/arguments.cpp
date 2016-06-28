@@ -9,7 +9,9 @@ struct __ngc_0_conditional_true__
 {
   template <bool condition> static inline void execute(int & n, const int & k, int & j)
   {
-    n += k;
+    {
+      n += k;
+    }
   }
 };
 
@@ -17,7 +19,9 @@ struct __ngc_0_conditional_false__
 {
   template <bool condition> static inline void execute(int & n, const int & k, int & j)
   {
-    j++;
+    {
+      j++;
+    }
   }
 };
 

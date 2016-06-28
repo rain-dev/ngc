@@ -8,6 +8,6 @@ void f()
   }
   else
   {
-    std :: cout << "Value if false." << std :: endl;    
+    std :: cout << "Value if false." << std :: endl;
   }
 }

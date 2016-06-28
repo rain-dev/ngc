@@ -18,7 +18,9 @@ template <typename type> struct c <type> :: __ngc_0_conditional_true__
 {
   template <bool condition> static inline void execute()
   {
-    std :: cout << "Condition is true" << std :: endl;
+    {
+      std :: cout << "Condition is true" << std :: endl;
+    }
   }
 };
 
@@ -26,7 +28,9 @@ template <typename type> struct c <type> :: __ngc_0_conditional_false__
 {
   template <bool condition> static inline void execute()
   {
-    std :: cout << "Condition is false" << std :: endl;
+    {
+      std :: cout << "Condition is false" << std :: endl;
+    }
   }
 };
 

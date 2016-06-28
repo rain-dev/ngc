@@ -14,7 +14,9 @@ struct __ngc_0_conditional_true__
   static inline void execute()
   {
     constexpr int k = 17;
-    std :: cout << k << std :: endl;
+    {
+      std :: cout << k << std :: endl;
+    }
   }
 };
 
@@ -22,7 +24,9 @@ struct __ngc_0_conditional_false__
 {
   static inline void execute()
   {
-    std :: cout << "Nothing to say." << std :: endl;
+    {
+      std :: cout << "Nothing to say." << std :: endl;
+    }
   }
 };
 

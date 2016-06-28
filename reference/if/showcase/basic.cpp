@@ -13,7 +13,9 @@ struct __ngc_0_conditional_true__
 {
   static inline void execute()
   {
-    std :: cout << "Value is true" << std :: endl;
+    {
+      std :: cout << "Value is true" << std :: endl;
+    }
   }
 };
 
@@ -21,7 +23,9 @@ struct __ngc_0_conditional_false__
 {
   static inline void execute()
   {
-    std :: cout << "Value is false" << std :: endl;
+    {
+      std :: cout << "Value is false" << std :: endl;
+    }
   }
 };
 

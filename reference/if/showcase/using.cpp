@@ -19,7 +19,9 @@ struct __ngc_0_conditional_true__
   static inline void execute()
   {
     using namespace n;
-    std :: cout << k << std :: endl;
+    {
+      std :: cout << k << std :: endl;
+    }
   }
 };
 

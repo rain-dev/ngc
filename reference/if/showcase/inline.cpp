@@ -13,7 +13,9 @@ class c
   {
     template <bool> static inline void execute()
     {
-      std :: cout << "Condition is true" << std :: endl;
+      {
+        std :: cout << "Condition is true" << std :: endl;
+      }
     }
   };
 
@@ -21,7 +23,9 @@ class c
   {
     template <bool> static inline void execute()
     {
-      std :: cout << "Condition is false" << std :: endl;
+      {
+        std :: cout << "Condition is false" << std :: endl;
+      }
     }
   };
 
