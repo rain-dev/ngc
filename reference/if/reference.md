@@ -224,3 +224,15 @@ Therefore, **all** `using` statements in any scope of the function that contain 
 This will ensure that all the scopes accessible outside the code of the `if <>` will also be accessible inside it.
 
 For examples, see `showcase/using.ngc` and `showcase/using.cpp`.
+
+#### `constexpr` declarations
+
+All `constexpr` declarations that were defined within the scope of the function need to be accessible from within the `if <>` clause. However, passing those `constexpr`s as arguments to `execute()` will lose their `constexpr` status, so that for example it will be impossible to use them as template arguments.
+
+All the `constexpr` declarations whose value is used within the scope of the `if <>` will be therefore copied at the beginning of the `execute()` method with the following conditions:
+
+* They will appear in the same order as they do in the function.
+* The order will also be mantained with **`using` statements**. This will ensure that if a `constexpr` declaration relies on an `using` statement, its validity will not be affected.
+* If more than one `constexpr` is declared with the same name in different scopes in which the `if <>` is contained, then **only** the last one will be added at the beginning of the `execute()` method, as the previous will be hidden by the last one.
+
+For examples, see `showcase/constexpr.ngc` and `showcase/constexpr.cpp`.
