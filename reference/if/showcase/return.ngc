@@ -1,0 +1,11 @@
+static constexpr bool value = true;
+
+int f()
+{
+  if <value>
+  {
+    return 3;
+  }
+
+  return 17;
+}
