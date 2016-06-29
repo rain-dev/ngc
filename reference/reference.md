@@ -56,17 +56,3 @@ template <typename true_type, typename false_type> struct __ngc_conditional__ <f
 };
 
 ```
-
-#### Null constructor
-
-A template function that returns an untouched portion of memory with the type provided. No operation is carried whatsoever on that portion of memory. Therefore, a call to null constructor is capable of overriding even a deleted default constructor. See `if` and `optional` reference for further information.
-
-Possible implementation:
-
-```c++
-template <typename type> type __ngc_null_constructor__()
-{
-    char null[sizeof(type)];
-    return *((type *) null);
-}
-```

@@ -13,6 +13,7 @@ template <bool value, typename type> void f(type item)
   {
     item.hello();
   }
+  std :: cout << item << std :: endl;
 }
 ```
 
