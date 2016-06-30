@@ -27,7 +27,6 @@ C++ templates are awesome. With a boolean template parameter, a support double-s
 It's like an *if clause*, but its value is determined at *compile time*. It's awesome! <sup> 1 </sup>
 
 ```c++
-
 template <int number> void even_only()
 {
   if <number % 2 == 0>
@@ -39,11 +38,9 @@ template <int number> void even_only()
     // We don't serve your kind here!
   }
 }
-
 ```
 
 ```c++
-
 template <bool enable> class conditional_even_executor;
 
 template <> class conditional_even_executor <true>
@@ -72,7 +69,6 @@ template <int number> void even_only()
 {
   conditional_even_executor <number % 2 == 0> :: execute();
 }
-
 ```
 
 <sup> 1 </sup> And it is not only about performance. Consider the following example:
