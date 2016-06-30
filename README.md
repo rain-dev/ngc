@@ -4,13 +4,13 @@
 
 **C <>** is nearly as simple to write as other modern programming languages, but enabling the user to effortlessly write structured compile-time code, it is often *faster* than C++ itself at runtime.
 
-## How can I contribute?
-
-We are so happy you asked! **Yay!** Angular C is still an idea in a very early phase of development. If you are a developer and you are keen on C++, feel free to get in touch!
-
-Write an email to Matteo (matteo.monti@rain.vg) or Alessio (alessio.paccoia@rain.vg), to get more info about the current status of the project, and how to help. Suggestions and random hellos are also very appreciated! :)
-
-We will try to keep our reference updated with a clear scheme of how we are trying to get things done. Therefore, it should be easy for you to see where things are going. In that case, feel free to develop your feature and send us a pull request here, on Github!
+> ## How can I contribute?
+>
+>**Yay!** We are so happy you asked! Angular C is still an idea in a very early phase of development. If you are a developer and you are keen on C++, feel free to get in touch!
+>
+>Write an email to Matteo (matteo.monti@rain.vg) or Alessio (alessio.paccoia@rain.vg), to get more info about the current status of the project, and how to help. Suggestions and random hellos are also very appreciated! :)
+>
+>We will try to keep our reference updated with a clear scheme of how we are trying to get things done. Therefore, it should be easy for you to see where things are going. In that case, feel free to develop your feature and send us a pull request here, on Github!
 
 ## Highlights
 
