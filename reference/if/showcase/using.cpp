@@ -38,5 +38,5 @@ void f()
 {
   using namespace n;
 
-  __ngc_conditional__ <value, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: execute();
+  std :: conditional <value, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: execute();
 }

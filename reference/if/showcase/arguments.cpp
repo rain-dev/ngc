@@ -30,6 +30,6 @@ struct __ngc_0_conditional_false__
 template <bool condition> void f(int & n, int j, double x)
 {
   const int k = 12;
-  __ngc_conditional__ <condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <condition> (n, k, j);
+  std :: conditional <condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <condition> (n, k, j);
   n /= (x + j);
 }

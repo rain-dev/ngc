@@ -33,6 +33,6 @@ class c
 
   template <bool condition> void f()
   {
-    __ngc_conditional__ <condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <condition> ();
+    std :: conditional <condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <condition> ();
   }
 };

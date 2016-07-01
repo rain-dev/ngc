@@ -39,7 +39,7 @@ struct __ngc_0_conditional_true__
   template <bool first_condition, bool second_condition> static inline void execute()
   {
     {
-      __ngc_conditional__ <second_condition, __ngc_1_conditional_true__, __ngc_1_conditional_false__> :: type :: template execute <first_condition, second_condition>();
+      std :: conditional <second_condition, __ngc_1_conditional_true__, __ngc_1_conditional_false__> :: type :: template execute <first_condition, second_condition>();
     }
   }
 };
@@ -78,7 +78,7 @@ struct __ngc_0_conditional_false__
   template <bool first_condition, bool second_condition> static inline void execute()
   {
     {
-      __ngc_conditional__ <second_condition, __ngc_2_conditional_true__, __ngc_2_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
+      std :: conditional <second_condition, __ngc_2_conditional_true__, __ngc_2_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
     }
   }
 };
@@ -87,5 +87,5 @@ struct __ngc_0_conditional_false__
 
 template <bool first_condition, bool second_condition> void f()
 {
-  __ngc_conditional__ <first_condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
+  std :: conditional <first_condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
 }

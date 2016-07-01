@@ -28,31 +28,3 @@ C <> will make use of the following parse-specific structures:
 ## Preliminary injection
 
 At the beginning of every C <> parsed code a C++ header will be added, providing templates and definitions that will be used throught the parsed code.
-
-### Template utilities
-
-#### Conditional selector
-
-A template utility that will select one among two classes depending on the value of a boolean value provided. It is basically a ternary operator on typenames. It is equivalent to `std :: conditional`.
-
-```c++
-template <bool condition, typename true_type, typename false_type> struct __ngc_conditional__;
-```
-
-Possible implementation:
-
-```c++
-
-template <bool condition, typename true_type, typename false_type> struct __ngc_conditional__;
-
-template <typename true_type, typename false_type> struct __ngc_conditional__ <true, true_type, false_type>
-{
-  typedef true_type type;
-};
-
-template <typename true_type, typename false_type> struct __ngc_conditional__ <false, true_type, false_type>
-{
-  typedef false_type type;
-};
-
-```

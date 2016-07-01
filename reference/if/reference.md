@@ -186,7 +186,7 @@ For examples, see `showcase/basic_templates.ngc` and `showcase/basic_templates.c
 
 The instructions inside the `if <>` clause need to be able to access the same variables as a regular `if()` statement would. Since the code is now wrapped inside an `execute()` function, it is necessary that all the variables that are used in either branch of the `if <>` clause will be passed by reference to both the `execute()` statements.
 
-**Remark**: please note that it is necessary to make the arguments for both `execute()` methods identical. As we will later see, `__ngc_id_conditional_true__` and `__ngc_id_conditional_false__` are selected with an `__ngc_conditional__`, and their `execute` statement is called with an identical call.
+**Remark**: please note that it is necessary to make the arguments for both `execute()` methods identical. As we will later see, `__ngc_id_conditional_true__` and `__ngc_id_conditional_false__` are selected with an `std :: conditional`, and their `execute` statement is called with an identical call.
 
 Will be passed **as a reference** all and only the variables that are used in either branch of the `if <>` clause and that:
 
