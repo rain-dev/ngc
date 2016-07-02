@@ -1,42 +1,60 @@
+/* Global scope container declaration point */
+
+template <unsigned long, bool> struct __ngc_container__;
+
 /* Code */
 
 template <typename type> class c
 {
-  /* Class c forward injection point */
+  /* Class c container declaration point */
 
-  struct __ngc_0_conditional_true__;
-  struct __ngc_0_conditional_false__;
+  template <unsigned long, bool> struct __ngc_container__;
 
   /* Code */
 
   template <bool condition> void f();
 };
 
-/* Pre-function f signature and implementation injection point */
+/* Pre-function f container injection point */
 
-template <typename type> struct c <type> :: __ngc_0_conditional_true__
+template <typename type> template <bool __ngc_0_dummy__> struct c <type> :: __ngc_container__ <0, __ngc_0_dummy__>
 {
-  template <bool condition> static inline void execute()
+  struct __ngc_conditional_true__
   {
-    {
-      std :: cout << "Condition is true" << std :: endl;
-    }
-  }
-};
+    /* __ngc_conditional_true__ container declaration point */
 
-template <typename type> struct c <type> :: __ngc_0_conditional_false__
-{
-  template <bool condition> static inline void execute()
-  {
+    template <unsigned long, bool> struct __ngc_container__;
+
+    /* __ngc_conditional_true__ code */
+
+    template <bool condition> static inline void execute()
     {
-      std :: cout << "Condition is false" << std :: endl;
+      {
+        std :: cout << "Condition is true" << std :: endl;
+      }
     }
-  }
+  };
+
+  struct __ngc_conditional_false__
+  {
+    /* __ngc_conditional_false__ container declaration point */
+
+    template <unsigned long, bool> struct __ngc_container__;
+
+    /* __ngc_conditional_false__ code */
+
+    template <bool condition> static inline void execute()
+    {
+      {
+        std :: cout << "Condition is false" << std :: endl;
+      }
+    }
+  };
 };
 
 /* Code */
 
 template <typename type> template <bool condition> void c <type> :: f()
 {
-  std :: conditional <condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <condition> ();
+  std :: conditional <condition, typename __ngc_container__ <0, false> :: __ngc_conditional_true__, typename __ngc_container__ <0, false> :: __ngc_conditional_false__> :: type :: template execute <condition> ();
 }

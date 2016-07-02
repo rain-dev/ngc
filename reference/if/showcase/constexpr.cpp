@@ -1,33 +1,47 @@
-/* Global scope forward injection point */
+/* Global scope container declaration point */
 
-struct __ngc_0_conditional_true__;
-struct __ngc_0_conditional_false__;
+template <unsigned long, bool> struct __ngc_container__;
 
 /* Code */
 
 static constexpr bool value = true;
 
-/* Pre-function f signature and implementation injection point */
+/* Pre-function f container injection point */
 
-struct __ngc_0_conditional_true__
+template <bool __ngc_0_dummy__> struct __ngc_container__ <0, __ngc_0_dummy__>
 {
-  static inline void execute()
+  struct __ngc_conditional_true__
   {
-    constexpr int k = 17;
-    {
-      std :: cout << k << std :: endl;
-    }
-  }
-};
+    /* __ngc_conditional_true__ container declaration point */
 
-struct __ngc_0_conditional_false__
-{
-  static inline void execute()
-  {
+    template <unsigned long, bool> struct __ngc_container__;
+
+    /* __ngc_conditional_true__ code */
+
+    static inline void execute()
     {
-      std :: cout << "Nothing to say." << std :: endl;
+      constexpr int k = 17;
+      {
+        std :: cout << k << std :: endl;
+      }
     }
-  }
+  };
+
+  struct __ngc_conditional_false__
+  {
+    /* __ngc_conditional_false__ container declaration point */
+
+    template <unsigned long, bool> struct __ngc_container__;
+
+    /* __ngc_conditional_false__ code */
+
+    static inline void execute()
+    {
+      {
+        std :: cout << "Nothing to say." << std :: endl;
+      }
+    }
+  };
 };
 
 /* Code */
@@ -35,5 +49,5 @@ struct __ngc_0_conditional_false__
 void f()
 {
   constexpr int k = 17;
-  std :: conditional <value, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: execute();
+  std :: conditional <value, typename __ngc_container__ <0, false> :: __ngc_conditional_true__, typename __ngc_container__ <0, false> :: __ngc_conditional_false__> :: type :: execute();
 }

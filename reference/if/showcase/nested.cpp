@@ -1,91 +1,121 @@
-/* Global scope forward injection point */
+/* Global scope container declaration point */
 
-struct __ngc_0_conditional_true__;
-struct __ngc_0_conditional_false__;
+template <unsigned long, bool> struct __ngc_container__;
 
-/* Pre-function f implementation injection point */
+/* Pre-function f container injection point */
 
-struct __ngc_0_conditional_true__
+template <bool __ngc_0_dummy__> struct __ngc_container__ <0, __ngc_0_dummy__>
 {
-  /* Class __ngc_0_conditional_true__ forward injection point */
-
-  struct __ngc_1_conditional_true__;
-  struct __ngc_1_conditional_false__;
-
-  /* Pre-function execute signature and implementation injection point */
-
-  struct __ngc_1_conditional_true__
+  struct __ngc_conditional_true__
   {
-    template <bool first_condition, bool second_condition> static inline void execute()
+    /* __ngc_conditional_true__ container declaration point */
+
+    template <unsigned long, bool> struct __ngc_container__;
+
+    /* Pre-function execute container injection point */
+
+    template <bool __ngc_1_dummy__> struct __ngc_container__ <1, __ngc_1_dummy__>
     {
+      struct __ngc_conditional_true__
       {
-        std :: cout << "Both are true." << std :: endl;
-      }
+        /* __ngc_conditional_true__ container declaration point */
+
+        template <unsigned long, bool> struct __ngc_container__;
+
+        /* __ngc_conditional_true__ code*/
+
+        template <bool first_condition, bool second_condition> static inline void execute()
+        {
+          {
+            std :: cout << "Both are true." << std :: endl;
+          }
+        };
+      };
+
+      struct __ngc_conditional_false__
+      {
+        /* __ngc_conditional_false__ container declaration point */
+
+        template <unsigned long, bool> struct __ngc_container__;
+
+        /* __ngc_conditional_false__ code*/
+
+        template <bool first_condition, bool second_condition> static inline void execute()
+        {
+          {
+            std :: cout << "First is true but second is false." << std :: endl;
+          }
+        }
+      };
     };
-  };
 
-  struct __ngc_1_conditional_false__
-  {
+    /* __ngc_conditional_true__ code */
+
     template <bool first_condition, bool second_condition> static inline void execute()
     {
       {
-        std :: cout << "First is true but second is false." << std :: endl;
+        std :: conditional <second_condition, typename __ngc_container__ <1, false> :: __ngc_conditional_true__, typename __ngc_container__ <1, false> :: __ngc_conditional_false__> :: type :: template execute <first_condition, second_condition>();
       }
     }
   };
 
-  /* ngc 0 code*/
-
-  template <bool first_condition, bool second_condition> static inline void execute()
+  struct __ngc_conditional_false__
   {
+    /* __ngc_conditional_false__ container declaration point */
+
+    template <unsigned long, bool> struct __ngc_container__;
+
+    /* Pre-function execute container injection point */
+
+    template <bool __ngc_2_dummy__> struct __ngc_container__ <2, __ngc_2_dummy__>
     {
-      std :: conditional <second_condition, __ngc_1_conditional_true__, __ngc_1_conditional_false__> :: type :: template execute <first_condition, second_condition>();
-    }
-  }
-};
-
-struct __ngc_0_conditional_false__
-{
-  /* Class __ngc_0_conditional_false__ forward injection point */
-
-  struct __ngc_2_conditional_true__;
-  struct __ngc_2_conditional_false__;
-
-  /* Pre-function execute signature and implementation injection point */
-
-  struct __ngc_2_conditional_true__
-  {
-    template <bool first_condition, bool second_condition> static inline void execute()
-    {
+      struct __ngc_conditional_true__
       {
-        std :: cout << "First is false but second is true." << std :: endl;
-      }
+        /* __ngc_conditional_true__ container declaration point */
+
+        template <unsigned long, bool> struct __ngc_container__;
+
+        /* __ngc_conditional_true__ code */
+
+        template <bool first_condition, bool second_condition> static inline void execute()
+        {
+          {
+            std :: cout << "First is false but second is true." << std :: endl;
+          }
+        };
+      };
+
+      struct __ngc_conditional_false__
+      {
+        /* __ngc_conditional_false__ container declaration point */
+
+        template <unsigned long, bool> struct __ngc_container__;
+
+        /* __ngc_conditional_false__ code */
+
+        template <bool first_condition, bool second_condition> static inline void execute()
+        {
+          {
+            std :: cout << "Both are false." << std :: endl;
+          }
+        }
+      };
     };
-  };
 
-  struct __ngc_2_conditional_false__
-  {
+    /* __ngc_conditional_false__ code */
+
     template <bool first_condition, bool second_condition> static inline void execute()
     {
       {
-        std :: cout << "Both are false." << std :: endl;
+        std :: conditional <second_condition, typename __ngc_container__ <2, false> :: __ngc_conditional_true__, typename __ngc_container__ <2, false> :: __ngc_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
       }
     }
   };
-
-  /* ngc 0 code*/
-
-  template <bool first_condition, bool second_condition> static inline void execute()
-  {
-    {
-      std :: conditional <second_condition, __ngc_2_conditional_true__, __ngc_2_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
-    }
-  }
 };
 
 /* Code */
 
 template <bool first_condition, bool second_condition> void f()
 {
-  std :: conditional <first_condition, __ngc_0_conditional_true__, __ngc_0_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
+  std :: conditional <first_condition, typename __ngc_container__ <0, false> :: __ngc_conditional_true__, typename __ngc_container__ <0, false> :: __ngc_conditional_false__> :: type :: template execute <first_condition, second_condition> ();
 }
