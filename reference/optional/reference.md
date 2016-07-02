@@ -49,7 +49,16 @@ The main issue in the creation of optionals is the semantics associated with the
 
 ### `__ngc_null__`
 
-This leads to the need for null constructors. An unspecialized class `__ngc_null_type__` will be defined. We will then define
+This leads to the need for null constructors. An empty, but implemented class `__ngc_null_type__` will be defined:
+
+```c++
+struct __ngc_null_type__
+{
+  __ngc_null_type__() {} // Explicit default constructor to allow the construciton of const objects.
+};
+```
+
+We will then define
 
 ```c++
 const __ngc_null_type__ __ngc_null__;
