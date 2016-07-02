@@ -6,6 +6,12 @@ template <unsigned long, bool> struct __ngc_container__;
 
 namespace n
 {
+  /* Namespace n container declaration point */
+
+  template <unsigned long, bool> struct __ngc_container__;
+
+  /* Code */
+
   int k;
 };
 
@@ -52,5 +58,6 @@ void f()
 {
   using namespace n;
 
-  std :: conditional <value, typename __ngc_container__ <0, false> :: __ngc_conditional_true__, typename __ngc_container__ <0, false> :: __ngc_conditional_false__> :: type :: execute();
+  /* Note the explicit global namespace specifier: this is the only situation where it is used. */
+  std :: conditional <value, typename :: __ngc_container__ <0, false> :: __ngc_conditional_true__, typename :: __ngc_container__ <0, false> :: __ngc_conditional_false__> :: type :: execute();
 }
