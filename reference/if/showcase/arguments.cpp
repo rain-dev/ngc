@@ -2,7 +2,7 @@
 
 template <unsigned long, bool> struct __ngc_container__;
 
-/* Pre-function f signature and implementation injection point */
+/* Pre-function f container injection point */
 
 template <bool __ngc_0_dummy__> struct __ngc_container__ <0, __ngc_0_dummy__>
 {
