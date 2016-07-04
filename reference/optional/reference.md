@@ -74,3 +74,76 @@ class mynullconstructiblestructure
   }
 }
 ```
+
+## Phantoms (general)
+
+An `__ngc_phantom__ <type>` is a template structure that is null constructible, and exposes:
+
+* An `__ngc_embody__()` method that returns a reference to the `type` object that the phantom stores.
+* Appropriate forwarding constructors.
+* Appropriate forwarding operators.
+
+### Null constructibility
+
+An `__ngc_phantom__ <type>` structure is null constructible regardless of `type`, as it does not inherit or store any `type` object. Instead, an `__ngc_phantom__ <type>` is just a wrapper for an array of `int8_t` of appropriate size.
+
+```c++
+template <typename type> class __ngc_phantom__
+{
+  int8_t _ [sizeof(type)];
+};
+```
+
+Being `int8_t` a primitive, arithmetic type, the default construction of an array of `int8_t` carries out, as a matter of fact, no operation whatsoever.
+
+We can therefore implement a null constructor:
+
+```c++
+__ngc_phantom__(__ngc_null_type__)
+{
+}
+```
+
+which only constructs a proper sized piece of memory without carrying out any operation on it.
+
+### Embodiment
+
+A phantom can provide a reference to the object it stores via the `__ngc_embody__()` method, which returns a reinterpreted reference to the same piece of memory where the phantom is stored, but interpreted as a `type` object.
+
+An example implementation of `__ngc_embody__()` could be as follows:
+
+```c++
+type & __ngc_embody__()
+{
+  return *((type *) this);
+}
+
+const type & __ngc_embody__() const
+{
+  return *((type *) this);
+}
+```
+
+We can now null-construct anything and then get a reference to the object stored. For example:
+
+```c++
+class my_non_default_constructible_class
+{
+public:
+
+  int i;
+
+  my_non_default_constructible_class() = delete;
+  my_non_default_constructible_class(int)
+  {
+    this->i = 42;
+  }
+};
+
+__ngc_phantom__ <my_non_default_constructible_class> p;
+std :: cout << p.__ngc_embody__().i << std :: endl; // Random value, no operation was carried out on the memory.
+```
+
+## `__ngc_construct__`
+
+As we have seen, phantoms allow us to build any object without having to call its constructors. This, however, poses a significant issue: we have no way to call constructors later, and since no `type` member 

@@ -77,7 +77,7 @@ template <bool __ngc_0_dummy__> struct __ngc_container__ <0, __ngc_0_dummy__>
     template <unsigned long, bool> struct __ngc_container__;
   };
 };
-``
+```
 
 ### Injection point
 
