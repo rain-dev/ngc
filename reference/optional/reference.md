@@ -115,12 +115,12 @@ An example implementation of `__ngc_embody__()` could be as follows:
 ```c++
 type & __ngc_embody__()
 {
-  return *((type *) this);
+  return reinterpret_cast <type &> (*this);
 }
 
 const type & __ngc_embody__() const
 {
-  return *((type *) this);
+  return reinterpret_cast <const type &> (*this);
 }
 ```
 
@@ -143,7 +143,3 @@ public:
 __ngc_phantom__ <my_non_default_constructible_class> p;
 std :: cout << p.__ngc_embody__().i << std :: endl; // Random value, no operation was carried out on the memory.
 ```
-
-## `__ngc_construct__`
-
-As we have seen, phantoms allow us to build any object without having to call its constructors. This, however, poses a significant issue: we have no way to call constructors later, and since no `type` member 
