@@ -75,9 +75,9 @@ class mynullconstructiblestructure
 }
 ```
 
-## Phantoms (general)
+## Phantoms (base)
 
-An `__ngc_phantom__ <type>` is a template structure that is null constructible, and exposes:
+An `__ngc_phantom_base__ <type>` is a template structure that is null constructible, and exposes:
 
 * An `__ngc_embody__()` method that returns a reference to the `type` object that the phantom stores.
 * Appropriate forwarding constructors.
@@ -85,10 +85,10 @@ An `__ngc_phantom__ <type>` is a template structure that is null constructible, 
 
 ### Null constructibility
 
-An `__ngc_phantom__ <type>` structure is null constructible regardless of `type`, as it does not inherit or store any `type` object. Instead, an `__ngc_phantom__ <type>` is just a wrapper for an array of `int8_t` of appropriate size.
+An `__ngc_phantom_base__ <type>` structure is null constructible regardless of `type`, as it does not inherit or store any `type` object. Instead, an `__ngc_phantom_base__ <type>` is just a wrapper for an array of `int8_t` of appropriate size.
 
 ```c++
-template <typename type> class __ngc_phantom__
+template <typename type> class __ngc_phantom_base__
 {
   int8_t _ [sizeof(type)];
 };
@@ -99,7 +99,7 @@ Being `int8_t` a primitive, arithmetic type, the default construction of an arra
 We can therefore implement a null constructor:
 
 ```c++
-__ngc_phantom__(__ngc_null_type__)
+__ngc_phantom_base__(__ngc_null_type__)
 {
 }
 ```
@@ -140,6 +140,16 @@ public:
   }
 };
 
-__ngc_phantom__ <my_non_default_constructible_class> p;
+__ngc_phantom_base__ <my_non_default_constructible_class> p;
 std :: cout << p.__ngc_embody__().i << std :: endl; // Random value, no operation was carried out on the memory.
 ```
+
+## Delayed construction
+
+As we have seen, phantoms allow us to build any object without having to call its constructors. This, however, poses a significant issue: we have no way to call constructors later, and since no `type` member or base class is defined in `__ngc_phantom__` it is not possible to forward a call to any of `type`'s constructors.
+
+This issue will be addressed by systematically adding to every class a mechanism to mimic the behavior of the constructors in that class, with the difference that it is based on methods that can be called after the memory is allocated, i.e., in case a null constructor has been used.
+
+### `__ngc_construct__`
+
+A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately copied. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names), and the body of the `__ngc_construct__` method will be identical to the body of the corresponding constructor, with the addition of a call to a member initializer that will account for member initialization lists and for calling default constructors on members that are not specified by the initialization list.
