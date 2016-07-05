@@ -40,7 +40,7 @@ at? a = g();
 guard(another_int = a.b.c.d.e)
   throw "Either a, or a.b.c, or a.b.c.d.e doesn't exist."
 
-double x = optional_double_function() ?? 42.; /* 42 if the optional return is unset */
+double x = function_that_returns_optional_double() ?? 42.; /* If nothing is returned, default to 42 */
 ```
 
 ## Null constructors
@@ -90,7 +90,7 @@ An `__ngc_phantom_base__ <type>` structure is null constructible regardless of `
 ```c++
 template <typename type> class __ngc_phantom_base__
 {
-  int8_t _ [sizeof(type)];
+  int8_t _[sizeof(type)];
 };
 ```
 
@@ -144,6 +144,34 @@ __ngc_phantom_base__ <my_non_default_constructible_class> p;
 std :: cout << p.__ngc_embody__().i << std :: endl; // Random value, no operation was carried out on the memory.
 ```
 
+A global `__ngc_embody__` function will also be exposed to call the `__ngc_embody__` method on an object depending on its type, i.e., by calling `__ngc_embody__` only if the object is a phantom.
+
+```c++
+template <typename type> auto & __ngc_embody__(type &);
+
+template <typename type> auto & __ngc_embody__(__ngc_phantom__ <type> & that)
+{
+    return that.__ngc_embody__();
+}
+
+template <typename type> auto & __ngc_embody__(const __ngc_phantom__ <type> & that)
+{
+    return that.__ngc_embody__();
+}
+
+template <typename type> auto & __ngc_embody__(type & that)
+{
+    return that;
+}
+
+template <typename type> auto & __ngc_embody__(const type & that)
+{
+    return that;
+}
+```
+
+This allows us to call `__ngc_embody__` on any object in C++ to safely get a reference to the wrapped object, only in case the object is a phantom.
+
 ## Delayed construction
 
 As we have seen, phantoms allow us to build any object without having to call its constructors. This, however, poses a significant issue: we have no way to call constructors later, and since no `type` member or base class is defined in `__ngc_phantom__` it is not possible to forward a call to any of `type`'s constructors.
@@ -152,4 +180,4 @@ This issue will be addressed by systematically adding to every class a mechanism
 
 ### `__ngc_construct__`
 
-A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately copied. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names), and the body of the `__ngc_construct__` method will be identical to the body of the corresponding constructor, with the addition of a call to a member initializer that will account for member initialization lists and for calling default constructors on members that are not specified by the initialization list.
+A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately copied. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names). The body of the `__ngc_construct__` method will contain the body of the corresponding constructor, prefaced by a call to a member initializer. A member initializer (see later) is a structure that processes member initialization lists by calling parametric and / or default constructors, depending on what was specified on the initialization list.
