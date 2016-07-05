@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-template <typename> struct __ngc_array_traits__;
+template <typename type> struct __ngc_array_traits__;
 
 template <typename atype, size_t asize> struct __ngc_array_traits__ <atype[asize]>
 {
@@ -13,9 +13,10 @@ template <typename atype, size_t asize> struct __ngc_array_traits__ <atype[asize
     static constexpr size_t size = asize;
 };
 
-template <typename> struct __ngc_array_traits__
+template <typename atype> struct __ngc_array_traits__
 {
     static constexpr bool is_array = false;
+    typedef atype type;
 };
 
 #endif

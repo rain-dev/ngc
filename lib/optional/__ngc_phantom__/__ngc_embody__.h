@@ -10,7 +10,7 @@ template <typename type> int8_t __ngc_can_embody__(__ngc_phantom_base__ <type> &
 template <typename type> int8_t __ngc_can_embody__(const __ngc_phantom_base__ <type> & that);
 int32_t __ngc_can_embody__(...);
 
-template <bool> struct __ngc_conditional_embody__;
+template <bool enable> struct __ngc_conditional_embody__;
 
 template <> struct __ngc_conditional_embody__ <true>
 {
