@@ -144,31 +144,9 @@ __ngc_phantom_base__ <my_non_default_constructible_class> p;
 std :: cout << p.__ngc_embody__().i << std :: endl; // Random value, no operation was carried out on the memory.
 ```
 
-A global `__ngc_embody__` function will also be exposed to call the `__ngc_embody__` method on an object depending on its type, i.e., by calling `__ngc_embody__` only if the object is a phantom.
+A global `__ngc_embody__` function will also be exposed to call the `__ngc_embody__` method on an object depending on its type, i.e., by calling `__ngc_embody__` only if the object is or has as a base class an `__ngc_phantom_base__`.
 
-```c++
-template <typename type> auto & __ngc_embody__(type &);
-
-template <typename type> auto & __ngc_embody__(__ngc_phantom__ <type> & that)
-{
-    return that.__ngc_embody__();
-}
-
-template <typename type> auto & __ngc_embody__(const __ngc_phantom__ <type> & that)
-{
-    return that.__ngc_embody__();
-}
-
-template <typename type> auto & __ngc_embody__(type & that)
-{
-    return that;
-}
-
-template <typename type> auto & __ngc_embody__(const type & that)
-{
-    return that;
-}
-```
+See `lib/optional/__ngc_phantom__/__ngc_embody__.h` for implementation.
 
 This allows us to call `__ngc_embody__` on any object in C++ to safely get a reference to the wrapped object, only in case the object is a phantom.
 
