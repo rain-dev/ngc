@@ -10,4 +10,6 @@
 
 #include "optional/__ngc_null__.h"
 
+#include "string/string.h"
+
 #endif
