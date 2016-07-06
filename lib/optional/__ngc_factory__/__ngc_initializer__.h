@@ -104,7 +104,8 @@ template <typename type> struct __ngc_initializer__
   {
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
     {
-      front_step <arguments_range <name, __ngc_parameter_pack__ <atypes...>> :: beg + 1, arguments_range <name, __ngc_parameter_pack__ <atypes...>> :: end - arguments_range <name, __ngc_parameter_pack__ <atypes...>> :: beg - 1, sizeof...(atypes) - arguments_range <name, __ngc_parameter_pack__<atypes...>> :: end> :: execute(member, std :: forward <atypes> (arguments)...);
+      typedef arguments_range <name, typename __ngc_reverse_parameter_pack__ <__ngc_parameter_pack__ <atypes...>> :: type> range;
+      front_step <range :: beg + 1, range :: end - range :: beg - 1, sizeof...(atypes) - range :: end> :: execute(member, std :: forward <atypes> (arguments)...);
     }
   };
 };
