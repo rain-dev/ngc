@@ -130,10 +130,32 @@ template <typename type> struct __ngc_initializer__
 
   template <bool dummy> struct member_iterator <0, dummy>
   {
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
+    {
+      member_initializer <typename type :: template __ngc_member__ <0, false> :: name> :: execute(type :: template __ngc_member__ <0, false> :: get(that), std :: forward <atypes> (arguments)...);
+    }
+  };
+
+  template <size_t index, bool dummy> struct member_iterator
+  {
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
+    {
+      member_iterator <index - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
+      member_initializer <typename type :: template __ngc_member__ <index, false> :: name> :: execute(type :: template __ngc_member__ <index, false> :: get(that), std :: forward <atypes> (arguments)...);
+    }
+  };
+
+  struct null_iterator
+  {
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
     {
     }
   };
 };
+
+template <typename type, typename... atypes> static inline void __ngc_initialize__(type & that, atypes && ... arguments)
+{
+  std :: conditional <(__ngc_member_count__ <type> :: value > 0), typename __ngc_initializer__ <type> :: template member_iterator <__ngc_member_count__ <type> :: value - 1, false>, typename __ngc_initializer__ <type> :: null_iterator> :: type :: execute(that, std :: forward <atypes> (arguments)...);
+}
 
 #endif
