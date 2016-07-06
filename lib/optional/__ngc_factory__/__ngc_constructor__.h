@@ -64,4 +64,9 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
   }
 };
 
+template <typename type, typename... atypes> static inline void __ngc_construct__(type & that, atypes && ... arguments)
+{
+  __ngc_constructor__ <std :: is_array <type> :: value, std :: is_class <typename __ngc_array_traits__ <type> :: type> :: value> :: execute(that, std :: forward <atypes> (arguments)...);
+}
+
 #endif
