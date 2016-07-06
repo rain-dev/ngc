@@ -125,6 +125,15 @@ template <typename type> struct __ngc_initializer__
       std :: conditional <range :: found, parametric_initializer, default_initializer> :: type :: execute(member, std :: forward <atypes> (arguments)...);
     }
   };
+
+  template <size_t index, bool dummy> struct member_iterator;
+
+  template <bool dummy> struct member_iterator <0, dummy>
+  {
+    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
+    {
+    }
+  };
 };
 
 #endif

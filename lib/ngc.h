@@ -3,6 +3,8 @@
 
 #include "__ngc_parameter_pack__.h"
 
+#include "introspection/__ngc_member_count__.h"
+
 #include "optional/__ngc_null__.h"
 
 #include "optional/__ngc_factory__/__ngc_array_traits__.h"
