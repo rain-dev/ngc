@@ -6,7 +6,7 @@
 #include "../__ngc_null__.h"
 #include "__ngc_phantom_base__.h"
 
-template <typename type> int8_t __ngc_can_embody__(__ngc_phantom_base__ <type> &);
+template <typename type> int8_t __ngc_can_embody__(__ngc_phantom_base__ <type> & that);
 template <typename type> int8_t __ngc_can_embody__(const __ngc_phantom_base__ <type> & that);
 int32_t __ngc_can_embody__(...);
 

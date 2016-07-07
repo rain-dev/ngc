@@ -30,7 +30,11 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
 
   template <bool dummy> struct iterator <0, dummy>
   {
-    template <typename type> static inline void execute(type & that) {}
+    template <typename type> static inline void execute(type & that)
+    {
+      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1]);
+    }
+
     template <typename type, typename atype, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument)
     {
       __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1], std :: forward <atype> (argument));
@@ -44,17 +48,22 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
 
   template <size_t index, bool dummy> struct iterator
   {
-    template <typename type> static inline void execute(type & that) {}
+    template <typename type> static inline void execute(type & that)
+    {
+      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1 - index]);
+      iterator <index - 1, false> :: execute(that);
+    }
+
     template <typename type, typename atype, typename... atypes, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument, atypes && ... arguments)
     {
-      iterator <index - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
       __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1 - index], std :: forward <atype> (argument));
+      iterator <index - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
     }
 
     template <typename type, typename atype, typename std :: enable_if <std :: is_array <typename std :: remove_reference <atype> :: type> :: value> :: type * = nullptr> static inline void execute(type & that, atype && argument)
     {
-      iterator <index - 1, false> :: execute(that, argument);
       __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1 - index], std :: forward <__ngc_array_traits__ <atype> :: type> (argument[__ngc_array_traits__ <type> :: size - 1 - index]));
+      iterator <index - 1, false> :: execute(that, argument);
     }
   };
 

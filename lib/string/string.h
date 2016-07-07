@@ -11,6 +11,11 @@ namespace ngc
 
     constexpr string() {}
 
+    template <char... rchars> string <chars..., rchars...> constexpr operator + (string <rchars...>)
+    {
+      return string <chars..., rchars...> {};
+    }
+
     constexpr operator const char * ()
     {
       return value;
