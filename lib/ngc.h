@@ -9,7 +9,7 @@
 
   ------------------------------------------
 
-  @file ngc.h
+  \file ngc.h
 
   This file serves as entry point for the inclusion tree of the ngc core
   library. Include this file at the beginning of every file to include all the
@@ -19,9 +19,9 @@
   points are included from here, that include other files. All the files are
   directly included from here.
 
-  @author Matteo Monti [matteo.monti@rain.vg]
-  @version 0.0.1
-  @date Jul 07, 2016
+  \author Matteo Monti [matteo.monti\rain.vg]
+  \version 0.0.1
+  \date Jul 07, 2016
 */
 
 #ifndef __lib__ngc__h
