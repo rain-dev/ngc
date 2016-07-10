@@ -9,6 +9,8 @@
 
   ------------------------------------------
 
+  @file ngc.h
+
   This file serves as entry point for the inclusion tree of the ngc core
   library. Include this file at the beginning of every file to include all the
   functionalities in the core template library.
