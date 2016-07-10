@@ -19,7 +19,7 @@
   points are included from here, that include other files. All the files are
   directly included from here.
 
-  \author Matteo Monti [matteo.monti\rain.vg]
+  \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 07, 2016
 */

@@ -24,7 +24,7 @@
   \c __ngc_parameter_pack__ to concatenate them and reverse their order
   respectively.
 
-  \author Matteo Monti [matteo.monti\rain.vg]
+  \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 07, 2016
 */
@@ -49,7 +49,7 @@
 
   \param types... A variadic set of type template parameters.
 
-  \author Matteo Monti [matteo.monti\rain.vg]
+  \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 07, 2016
 */
@@ -73,7 +73,7 @@ template <typename... types> struct __ngc_parameter_pack__;
   \param alpha The first \c __ngc_parameter_pack__.
   \param beta The second \c __ngc_parameter_pack__.
 
-  \author Matteo Monti [matteo.monti\rain.vg]
+  \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 07, 2016
 */
@@ -102,7 +102,7 @@ template <typename... alphas, typename... betas> struct __ngc_concatenate_parame
 
   \param pack The \c __ngc_parameter_pack__ to be reversed.
 
-  \author Matteo Monti [matteo.monti\rain.vg]
+  \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 07, 2016
 */
