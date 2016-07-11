@@ -63,10 +63,10 @@
 struct __ngc_null_type__
 {
   /**
-  \brief Constexpr constructor for \c __ngc_null_type__.
+    \brief Constexpr constructor for \c __ngc_null_type__.
 
-  Since \c __ngc_null_type__ is intended only as a dummy object, there are
-  no members in it and no operation is carried out by its constructor.
+    Since \c __ngc_null_type__ is intended only as a dummy object, there are
+    no members in it and no operation is carried out by its constructor.
   */
   constexpr __ngc_null_type__() {}
 };

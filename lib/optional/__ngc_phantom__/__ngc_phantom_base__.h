@@ -72,33 +72,33 @@ template <typename type> struct __ngc_phantom_base__
   int8_t _[sizeof(type)]; /**< Byte representation of \c type */
 
   /**
-  \brief Null constructor for \c __ngc_phantom_base__.
+    \brief Null constructor for \c __ngc_phantom_base__.
 
-  No operation is carried out on memory whatsoever, regardless of any
-  constructor in \c type. As the \c __ngc_phantom_base__ only stores \c type's
-  byte representation as an array of bytes, no constructor in \c type needs to
-  be called.
+    No operation is carried out on memory whatsoever, regardless of any
+    constructor in \c type. As the \c __ngc_phantom_base__ only stores \c type's
+    byte representation as an array of bytes, no constructor in \c type needs to
+    be called.
 
-  \param null A parameter of type \c __ngc_null_type__. Please use the globally
-  defined \c __ngc_null__.
+    \param null A parameter of type \c __ngc_null_type__. Please use the globally
+    defined \c __ngc_null__.
 
-  \see reference/optional/reference.md
-  \see lib/optional/__ngc_null__.h
-  */
-  __ngc_phantom_base__(__ngc_null_type__ null) {}
+    \see reference/optional/reference.md
+    \see lib/optional/__ngc_null__.h
+    */
+    __ngc_phantom_base__(__ngc_null_type__ null) {}
 
-  /**
-  \brief Embodiment function for \c __ngc_phantom_base__, returns a reference
-  to the object stored.
+    /**
+    \brief Embodiment function for \c __ngc_phantom_base__, returns a reference
+    to the object stored.
 
-  Use this function to retrieve a reference to the object stored in this
-  phantom. As the phantom only stores a bytewise representation of the object
-  as an array of bytes, a call to \c __ngc_embody__ will result in a
-  \c reinterpret_cast being called on the bytewise representation in the
-  phantom. This means that a call to \c __ngc_embody__ does not translate to any
-  CPU operation, and thus it comes at a null computational cost.
+    Use this function to retrieve a reference to the object stored in this
+    phantom. As the phantom only stores a bytewise representation of the object
+    as an array of bytes, a call to \c __ngc_embody__ will result in a
+    \c reinterpret_cast being called on the bytewise representation in the
+    phantom. This means that a call to \c __ngc_embody__ does not translate to any
+    CPU operation, and thus it comes at a null computational cost.
 
-  \return A reference to the object stored in the phantom.
+    \return A reference to the object stored in the phantom.
   */
   inline type & __ngc_embody__()
   {
@@ -106,17 +106,17 @@ template <typename type> struct __ngc_phantom_base__
   }
 
   /**
-  \brief Embodiment function for \c __ngc_phantom_base__, returns a const
-  reference to the object stored.
+    \brief Embodiment function for \c __ngc_phantom_base__, returns a const
+    reference to the object stored.
 
-  Use this function to retrieve a const reference to the object stored in this
-  phantom. As the phantom only stores a bytewise representation of the object
-  as an array of bytes, a call to \c __ngc_embody__ will result in a
-  \c reinterpret_cast being called on the bytewise representation in the
-  phantom. This means that a call to \c __ngc_embody__ does not translate to any
-  CPU operation, and thus it comes at a null computational cost.
+    Use this function to retrieve a const reference to the object stored in this
+    phantom. As the phantom only stores a bytewise representation of the object
+    as an array of bytes, a call to \c __ngc_embody__ will result in a
+    \c reinterpret_cast being called on the bytewise representation in the
+    phantom. This means that a call to \c __ngc_embody__ does not translate to any
+    CPU operation, and thus it comes at a null computational cost.
 
-  \return A const reference to the object stored in the phantom.
+    \return A const reference to the object stored in the phantom.
   */
   inline const type & __ngc_embody__() const
   {

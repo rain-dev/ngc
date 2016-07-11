@@ -45,31 +45,31 @@
 #include "__ngc_phantom_base__.h"
 
 /**
-\class __ngc_can_embody__
-\brief Service class for __ngc_embody__ that determines wether its template
-type parameter exposes an \c __ngc_embody__ method or not.
+  \class __ngc_can_embody__
+  \brief Service class for __ngc_embody__ that determines wether its template
+  type parameter exposes an \c __ngc_embody__ method or not.
 
-\c __ngc_can_embody__ is a service class for \c __ngc_embody__ that provided
-with a \c type template parameter, exposes a static constexpr boolean \c value
-that is \c true if \c type is a \c __ngc_phantom_base__ or has
-\c __ngc_phantom_base__ as base class.
+  \c __ngc_can_embody__ is a service class for \c __ngc_embody__ that provided
+  with a \c type template parameter, exposes a static constexpr boolean \c value
+  that is \c true if \c type is a \c __ngc_phantom_base__ or has
+  \c __ngc_phantom_base__ as base class.
 
-It is used as a condition to \c __ngc_conditional_embodier__ (see later) to
-conditionally call \c __ngc_embody__ on an object if it is available.
+  It is used as a condition to \c __ngc_conditional_embodier__ (see later) to
+  conditionally call \c __ngc_embody__ on an object if it is available.
 
-\code
-__ngc_can_embody__ <int> :: value; // false
-__ngc_can_embody__ <__ngc_phantom_base__ <int>> :: value; // true
+  \code
+  __ngc_can_embody__ <int> :: value; // false
+  __ngc_can_embody__ <__ngc_phantom_base__ <int>> :: value; // true
 
-class myclass : public __ngc_phantom_base__ <int> {};
-__ngc_can_embody__ <myclass> :: value; // true
-\endcode
+  class myclass : public __ngc_phantom_base__ <int> {};
+  __ngc_can_embody__ <myclass> :: value; // true
+  \endcode
 
-\param type The type to check for \c __ngc_embody__ method.
+  \param type The type to check for \c __ngc_embody__ method.
 
-\author Matteo Monti [matteo.monti@rain.vg]
-\version 0.0.2
-\date Jul 11, 2016
+  \author Matteo Monti [matteo.monti@rain.vg]
+  \version 0.0.2
+  \date Jul 11, 2016
 */
 template <typename type> struct __ngc_can_embody__
 {
@@ -80,34 +80,34 @@ template <typename type> struct __ngc_can_embody__
 };
 
 /**
-\class __ngc_conditional_embodier__
-\brief Service class for __ngc_embody__ that conditionally calls the
-\c __ngc_embody__ on an object.
+  \class __ngc_conditional_embodier__
+  \brief Service class for __ngc_embody__ that conditionally calls the
+  \c __ngc_embody__ on an object.
 
-\c __ngc_conditional_embodier__ is nothing more than a compile-time if.
-Depending on the value of the \c enable boolean template parameter, it will
-either expose a \c execute method that calls the \c __ngc_embody__ method on
-the object provided, or returns the object as it is.
+  \c __ngc_conditional_embodier__ is nothing more than a compile-time if.
+  Depending on the value of the \c enable boolean template parameter, it will
+  either expose a \c execute method that calls the \c __ngc_embody__ method on
+  the object provided, or returns the object as it is.
 
-\code
-__ngc_conditional_embodier__ <true> :: execute(my_object); // Returns my_object.__ngc_embody__()
-__ngc_conditional_embodier__ <false> :: execute(my_object); // Returns my_object
-\endcode
+  \code
+  __ngc_conditional_embodier__ <true> :: execute(my_object); // Returns my_object.__ngc_embody__()
+  __ngc_conditional_embodier__ <false> :: execute(my_object); // Returns my_object
+  \endcode
 
-\param enable A boolean value to enable or disable the call to the
-\c __ngc_embody__ method.
+  \param enable A boolean value to enable or disable the call to the
+  \c __ngc_embody__ method.
 
-\author Matteo Monti [matteo.monti@rain.vg]
-\version 0.0.2
-\date Jul 11, 2016
+  \author Matteo Monti [matteo.monti@rain.vg]
+  \version 0.0.2
+  \date Jul 11, 2016
 */
 template <bool enable> struct __ngc_conditional_embodier__;
 
 template <> struct __ngc_conditional_embodier__ <true>
 {
   /**
-  \brief Returns a reference to \c that.__ngc_embody__().
-  \param that The object to embody.
+    \brief Returns a reference to \c that.__ngc_embody__().
+    \param that The object to embody.
   */
   template <typename type> static inline auto & execute(type & that)
   {
@@ -115,8 +115,8 @@ template <> struct __ngc_conditional_embodier__ <true>
   }
 
   /**
-  \brief Returns a const reference to \c that.__ngc_embody__().
-  \param that The object to embody.
+    \brief Returns a const reference to \c that.__ngc_embody__().
+    \param that The object to embody.
   */
   template <typename type> static inline const auto & execute(const type & that)
   {
@@ -127,17 +127,17 @@ template <> struct __ngc_conditional_embodier__ <true>
 template <> struct __ngc_conditional_embodier__ <false>
 {
   /**
-  \brief Returns a reference to \c that.
-  \param that The object to embody.
+    \brief Returns a reference to \c that.
+    \param that The object to embody.
   */
-  template <typename type> static inline auto & execute(type & that)
-  {
-      return that;
-  }
+    template <typename type> static inline auto & execute(type & that)
+    {
+        return that;
+    }
 
-  /**
-  \brief Returns a const reference to \c that.
-  \param that The object to embody.
+    /**
+    \brief Returns a const reference to \c that.
+    \param that The object to embody.
   */
   template <typename type> static inline const auto & execute(const type & that)
   {
@@ -145,11 +145,53 @@ template <> struct __ngc_conditional_embodier__ <false>
   }
 };
 
+/**
+  \fn __ngc_embody__
+  \brief Returns a reference to the object wrapped in a phantom, or the object
+  itself if the object is not a phantom.
+
+  \c __ngc_embody__ does two things: first, it autonomously detects wether
+  the object passed is, or has as base class, \c __ngc_phantom_base__. If so,
+  it calls \c __ngc_embody__ on that object and returns a reference to its
+  result. Otherwise, it just returns a reference to the same object passed as
+  argument.
+
+  This means that \c __ngc_embody__ can be safely called on any object of any
+  kind, regardless of it being a phantom or not.
+
+  \param that The object to embody.
+  \return A reference to the embodied object, or the object itself.
+
+  \author Matteo Monti [matteo.monti@rain.vg]
+  \version 0.0.2
+  \date Jul 11, 2016
+*/
 template <typename type> auto & __ngc_embody__(type & that)
 {
   return __ngc_conditional_embodier__ <__ngc_can_embody__ <type> :: value> :: execute(that);
 }
 
+/**
+  \fn __ngc_embody__
+  \brief Returns a const reference to the object wrapped in a phantom, or the
+  object itself if the object is not a phantom.
+
+  \c __ngc_embody__ does two things: first, it autonomously detects wether
+  the object passed is, or has as base class, \c __ngc_phantom_base__. If so,
+  it calls \c __ngc_embody__ on that object and returns a const reference to its
+  result. Otherwise, it just returns a constreference to the same object passed
+  as argument.
+
+  This means that \c __ngc_embody__ can be safely called on any object of any
+  kind, regardless of it being a phantom or not.
+
+  \param that The object to embody.
+  \return A const reference to the embodied object, or the object itself.
+
+  \author Matteo Monti [matteo.monti@rain.vg]
+  \version 0.0.2
+  \date Jul 11, 2016
+*/
 template <typename type> const auto & __ngc_embody__(const type & that)
 {
   return __ngc_conditional_embodier__ <__ngc_can_embody__ <type> :: value> :: execute(that);
