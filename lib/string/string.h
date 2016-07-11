@@ -1,6 +1,3 @@
-#ifndef __lib__string__string__h
-#define __lib__string__string__h
-
 /**
   Angular C core library - Rain
 
@@ -23,6 +20,9 @@
   \version 0.0.1
   \date Jul 10, 2016
 */
+
+#ifndef __lib__string__string__h
+#define __lib__string__string__h
 
 namespace ngc
 {
@@ -47,6 +47,8 @@ namespace ngc
     `my pretty string`; // ngc :: string <'m', 'y', ' ', 'p', 'r', 'e', 't', 't', 'y', ' ', 's', 't', 'r', 'i', 'n', 'g'> {};
     \endcode
 
+    \param chars... The sequence of characters in the string.
+
     \author Matteo Monti [matteo.monti@rain.vg]
     \version 0.0.1
     \date Jul 10, 2016
@@ -55,7 +57,7 @@ namespace ngc
   {
   public:
 
-    static constexpr const char value [] = {chars..., '\0'}; /**< A static constexpr, null-terminated array of chars that stores the content of the \c string.*/
+    static constexpr const char value [] = {chars..., '\0'}; /**< A static constexpr, null-terminated array of chars that stores the content of the \c string. */
 
     /**
       \brief Constexpr default constructor for \c string.
@@ -73,8 +75,8 @@ namespace ngc
       resulting \c string is encoded in its type. Therefore, no operation needs
       to be carried out at runtime.
 
-      @param that The string to be concatenated to \c this \c string.
-      @return The concatenated string.
+      \param that The string to be concatenated to \c this \c string.
+      \return The concatenated string.
     */
     template <char... rchars> string <chars..., rchars...> constexpr operator + (string <rchars...> that)
     {

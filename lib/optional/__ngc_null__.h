@@ -1,6 +1,3 @@
-#ifndef __lib__optional____ngc_null____h
-#define __lib__optional____ngc_null____h
-
 /**
   Angular C core library - Rain
 
@@ -24,6 +21,9 @@
   \version 0.0.1
   \date Jul 11, 2016
 */
+
+#ifndef __lib__optional____ngc_null____h
+#define __lib__optional____ngc_null____h
 
 /**
   \class __ngc_null_type__
@@ -55,6 +55,7 @@
   \endcode
 
   \see reference/optional/reference.md
+
   \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 11, 2016
