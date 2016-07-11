@@ -1,0 +1,15 @@
+static constexpr bool value = true;
+
+void f()
+{
+  constexpr int k = 17;
+
+  if <value>
+  {
+    std :: cout << k << std :: endl;
+  }
+  else
+  {
+    std :: cout << "Nothing to say." << std :: endl;
+  }
+}

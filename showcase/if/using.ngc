@@ -1,0 +1,16 @@
+namespace n
+{
+  int k;
+};
+
+static constexpr bool value = true;
+
+void f()
+{
+  using namespace n;
+
+  if <value>
+  {
+    std :: cout << k << std :: endl;
+  }
+}

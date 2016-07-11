@@ -1,0 +1,12 @@
+ #include <type_traits> 
+
+ template <unsigned long, bool> struct __ngc_container__; 
+
+ template <bool __ngc_5_dummy__> struct  __ngc_container__ <5, __ngc_5_dummy__> {  struct __ngc_conditional_true__ { template <unsigned long, bool> struct __ngc_container__;  template <bool __ngc_6_dummy__> struct  __ngc_container__ <6, __ngc_6_dummy__> {  struct __ngc_conditional_true__ { template <unsigned long, bool> struct __ngc_container__; template <bool first_condition , bool second_condition >  static inline void execute(  ) { { std :: cout << "Both are true." << std :: endl ; }  } };
+ struct __ngc_conditional_false__ { template <unsigned long, bool> struct __ngc_container__; template <bool first_condition , bool second_condition >  static inline void execute(  ) { { std :: cout << "First is true but second is false." << std :: endl ; }  } };
+ }; template <bool first_condition , bool second_condition >  static inline void execute(  ) { {  std :: conditional <second_condition  , typename __ngc_container__ <6, false> :: __ngc_conditional_true__, typename __ngc_container__ <6, false> :: __ngc_conditional_false__> :: type ::  template execute <first_condition , second_condition  >  (  ); }  } };
+ struct __ngc_conditional_false__ { template <unsigned long, bool> struct __ngc_container__;  template <bool __ngc_7_dummy__> struct  __ngc_container__ <7, __ngc_7_dummy__> {  struct __ngc_conditional_true__ { template <unsigned long, bool> struct __ngc_container__; template <bool first_condition , bool second_condition >  static inline void execute(  ) { { std :: cout << "First is false but second is true." << std :: endl ; }  } };
+ struct __ngc_conditional_false__ { template <unsigned long, bool> struct __ngc_container__; template <bool first_condition , bool second_condition >  static inline void execute(  ) { { std :: cout << "Both are false." << std :: endl ; }  } };
+ }; template <bool first_condition , bool second_condition >  static inline void execute(  ) { {  std :: conditional <second_condition  , typename __ngc_container__ <7, false> :: __ngc_conditional_true__, typename __ngc_container__ <7, false> :: __ngc_conditional_false__> :: type ::  template execute <first_condition , second_condition  >  (  ); }  } };
+ }; template < bool first_condition , bool second_condition > void f ( ) {  std :: conditional <first_condition  , typename __ngc_container__ <5, false> :: __ngc_conditional_true__, typename __ngc_container__ <5, false> :: __ngc_conditional_false__> :: type ::  template execute <first_condition , second_condition  >  (  ); } 
+

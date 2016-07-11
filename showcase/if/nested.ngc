@@ -1,0 +1,25 @@
+template <bool first_condition, bool second_condition> void f()
+{
+  if <first_condition>
+  {
+    if <second_condition>
+    {
+      std :: cout << "Both are true." << std :: endl;
+    }
+    else
+    {
+      std :: cout << "First is true but second is false." << std :: endl;
+    }
+  }
+  else
+  {
+    if <second_condition>
+    {
+      std :: cout << "First is false but second is true." << std :: endl;
+    }
+    else
+    {
+      std :: cout << "Both are false." << std :: endl;
+    }
+  }
+}
