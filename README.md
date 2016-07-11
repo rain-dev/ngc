@@ -1,4 +1,4 @@
-Depemdencies: ANTLR4, Java
+Dependencies: ANTLR4, Java
 
 1) Compile grammar:
 ```
