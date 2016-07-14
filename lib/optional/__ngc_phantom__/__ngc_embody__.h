@@ -98,7 +98,7 @@ template <typename type> struct __ngc_can_embody__
   \c __ngc_embody__ method.
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.2
+  \version 0.0.1
   \date Jul 11, 2016
 */
 template <bool enable> struct __ngc_conditional_embodier__;
@@ -163,7 +163,7 @@ template <> struct __ngc_conditional_embodier__ <false>
   \return A reference to the embodied object, or the object itself.
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.2
+  \version 0.0.1
   \date Jul 11, 2016
 */
 template <typename type> auto & __ngc_embody__(type & that)
@@ -189,7 +189,7 @@ template <typename type> auto & __ngc_embody__(type & that)
   \return A const reference to the embodied object, or the object itself.
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.2
+  \version 0.0.1
   \date Jul 11, 2016
 */
 template <typename type> const auto & __ngc_embody__(const type & that)
