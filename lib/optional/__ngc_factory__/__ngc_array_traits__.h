@@ -59,6 +59,8 @@
     __ngc_array_traits__ <double[3]> :: size; // 3
   \endcode
 
+  \param atype The type to be diagnosed.
+
   \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
   \date Jul 14, 2016
