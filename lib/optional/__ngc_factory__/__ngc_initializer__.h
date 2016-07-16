@@ -228,10 +228,36 @@ template <typename type> struct __ngc_initializer__
     static constexpr size_t end = iterator <needle, typename __ngc_reverse_parameter_pack__ <haystack> :: type> :: end; /**< The position of the first occurence of a string after \c needle in \c haystack. */
   };
 
+  /**
+    \class back_step
+    \brief Last step of argument selection, removes entries from the last part
+    of the argument list, the forwards the call to \c __ngc_construct__.
+
+    After removing from the beginning of the arguments list and rotating all the
+    arguments that need to be forwarded at the end of the arguments list,
+    \c back_step takes care of removing the last items from the arguments list
+    by popping from the beginning of the arguments list all the unnecessary
+    items after the ones that need to be forwarded have been rotated to the end.
+
+    For further reference, see \c front_step and \c rotate_step.
+
+    \param back The number of elements to be removed from the back of the
+    arguments list.
+    \param dummy A dummy boolean parameter.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 16, 2016
+  */
   template <size_t back, bool dummy> struct back_step;
 
   template <bool dummy> struct back_step <0, dummy>
   {
+    /**
+      \brief Forwards the arguments to \c __ngc_construct__.
+      \param member The member to be initialized.
+      \param arguments... The arguments to \c member constructor.
+    */
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
     {
       __ngc_construct__(member, std :: forward <atypes> (arguments)...);
@@ -240,16 +266,53 @@ template <typename type> struct __ngc_initializer__
 
   template <size_t back, bool dummy> struct back_step
   {
+    /**
+      \brief Removes the first argument from the argument list, then iterates on
+      the next \c back_step.
+      \param member The member to be initialized.
+      \param argument The argument to be removed.
+      \param arguments... The arguments to forward to the next \c back_step.
+    */
     template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments)
     {
       back_step <back - 1, false> :: execute(member, std :: forward <atypes> (arguments)...);
     }
   };
 
+  /**
+    \class rotate_step
+    \brief Second step of argument selection, rotates the arguments that need
+    to be forwarded to \c __ngc_construct__ to the end of the arguments list.
+
+    This step does so so that the last arguments can be removed from the front
+    by \c back_step. Note that it is only possible to remove an element from the
+    beginning of an argument list. Therefore, to remove all the arguments that
+    come after the end of the argument range specified, it is necessary to first
+    remove all the unnecessary elements from the beginning, then to move all the
+    arguments that need to be moved to the end of the arguments list (and this
+    is what \c rotate_step does), then remove the elements after the selection
+    range that now appear at the beginning of the arguments list.
+
+    For further reference, see \c front_step and \c back_step.
+
+    \param rotate The number of elements to be moved to the end of the arguments
+    list.
+    \param back The number of steps that need to be performed by \c back_step
+    after \c rotate_step is concluded.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 16, 2016
+  */
   template <size_t rotate, size_t back> struct rotate_step;
 
   template <size_t back> struct rotate_step <0, back>
   {
+    /**
+      \brief Forwards the arguments to \c back_step.
+      \param member The member to be initialized.
+      \param arguments... The arguments to be forwarded to \c back_step.
+    */
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
     {
       back_step <back, false> :: execute(member, std :: forward <atypes> (arguments)...);
@@ -258,16 +321,57 @@ template <typename type> struct __ngc_initializer__
 
   template <size_t rotate, size_t back> struct rotate_step
   {
+    /**
+      \brief Moves the first argument to the end of the arguments list, then
+      recurs on the next \c rotate_step.
+      \param member The member to be initialized.
+      \param argument The argument to be moved at the end of the arguments list.
+      \param arguments... The remaining arguments.
+    */
     template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments)
     {
       rotate_step <rotate - 1, back> :: execute(member, std :: forward <atypes> (arguments)..., std :: forward <atype> (argument));
     }
   };
 
+  /**
+    \class front_step
+    \brief First step of argument selection, removes the first unnecessary
+    arguments from the arguments list.
+
+    \c front_step is the first step in the argument selection process. It takes
+    care of removing the first elements that don't belong to the arguments range
+    from the beginning of the arguments list. It does so by recursively removing
+    one element from the beginning of the arguments list until all the
+    unnecessary arguments have been removed.
+
+    After \c front_step is concluded, the arguments are forwarded to
+    \c rotate_step, which takes care of moving all the arguments in the argument
+    range at the end of the arguments list, so that \c back_step can remove
+    the trailing unnecessary arguments.
+
+    For further reference, see \c rotate_step and \c back_step.
+
+    \param front The number of elements to be removed from the beginning of the
+    arguments list.
+    \param rotate The number of steps that need to be performed by
+    \c rotate_step after \c front_step is concluded.
+    \param back The number of steps that need to be performed by
+    \c back_step after \c rotate_step is concluded.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 16, 2016
+  */
   template <size_t front, size_t rotate, size_t back> struct front_step;
 
   template <size_t rotate, size_t back> struct front_step <0, rotate, back>
   {
+    /**
+      \brief Forwards the arguments to \c rotate_step.
+      \param member The member to be initialized.
+      \param arguments... The arguments to be forwarded to \c rotate_step.
+    */
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
     {
       rotate_step <rotate, back> :: execute(member, std :: forward <atypes> (arguments)...);
@@ -276,6 +380,13 @@ template <typename type> struct __ngc_initializer__
 
   template <size_t front, size_t rotate, size_t back> struct front_step
   {
+    /**
+      \brief Removes the first argument from the arguments list, then recurs
+      on the next \c front_step.
+      \param member The member to be initialized.
+      \param argument The argument to be removed.
+      \param arguments... The argument on which to recur.
+    */
     template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments)
     {
       front_step <front - 1, rotate, back> :: execute(member, std :: forward <atypes> (arguments)...);
