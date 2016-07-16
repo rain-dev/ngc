@@ -8,6 +8,9 @@
   - https://github.com/rainvg/ngc
 */
 
+#ifndef __lib__optional____ngc_factory______ngc_constructor____hpp
+#define __lib__optional____ngc_factory______ngc_constructor____hpp
+
 template <typename type> inline void __ngc_constructor__ <false, false> :: execute(type & that)
 {
 }
@@ -64,3 +67,5 @@ template <typename type, typename... atypes> inline void __ngc_construct__(type 
 {
   __ngc_constructor__ <std :: is_array <type> :: value, std :: is_class <typename __ngc_array_traits__ <type> :: type> :: value> :: execute(that, std :: forward <atypes> (arguments)...);
 }
+
+#endif
