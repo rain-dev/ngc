@@ -27,6 +27,8 @@
 #ifndef __lib__ngc__h
 #define __lib__ngc__h
 
+/* Headers */
+
 #include "__ngc_parameter_pack__.h"
 
 #include "introspection/__ngc_member_count__.h"
@@ -41,5 +43,9 @@
 #include "optional/__ngc_phantom__/__ngc_phantom_base__.h"
 
 #include "string/string.h"
+
+/* Implementations */
+
+#include "optional/__ngc_factory__/__ngc_constructor__.hpp"
 
 #endif

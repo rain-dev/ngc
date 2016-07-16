@@ -94,7 +94,7 @@ template <> struct __ngc_constructor__ <false, false>
 
     \param that The object to construct.
   */
-  template <typename type> static inline void execute(type & that) {}
+  template <typename type> static inline void execute(type & that);
 
   /**
     \brief Assignment constructor equivalent for primitive object.
@@ -104,10 +104,7 @@ template <> struct __ngc_constructor__ <false, false>
     \param that The object to construct.
     \param argument The object to be assigned to \c that.
   */
-  template <typename type, typename atype> static inline void execute(type & that, atype && argument)
-  {
-    that = std :: forward <atype> (argument);
-  }
+  template <typename type, typename atype> static inline void execute(type & that, atype && argument);
 };
 
 template <> struct __ngc_constructor__ <false, true>
@@ -123,10 +120,7 @@ template <> struct __ngc_constructor__ <false, true>
     \param that The object to construct.
     \param arguments... The arguments to its constructor.
   */
-  template <typename type, typename... atypes> static inline void execute(type & that, atypes && ... arguments)
-  {
-    that.__ngc_construct__(std :: forward <atypes> (arguments)...);
-  }
+  template <typename type, typename... atypes> static inline void execute(type & that, atypes && ... arguments);
 };
 
 template <bool is_class> struct __ngc_constructor__ <true, is_class>
@@ -179,10 +173,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
 
       \param that The array to construct.
     */
-    template <typename type> static inline void execute(type & that)
-    {
-      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1]);
-    }
+    template <typename type> static inline void execute(type & that);
 
     /**
       \brief Calls the parametric \c __ngc_constructor__ \c :: \c execute on the
@@ -192,10 +183,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
       \param that The array to construct.
       \param argument The argument to the last array element's constructor.
     */
-    template <typename type, typename atype, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument)
-    {
-      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1], std :: forward <atype> (argument));
-    }
+    template <typename type, typename atype, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument);
 
     /**
       \brief Calls the parametric \c __ngc_constructor__ \c :: \c execute on the
@@ -205,10 +193,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
       \param that The array to construct.
       \param argument The initialization array.
     */
-    template <typename type, typename atype, typename std :: enable_if <std :: is_array <typename std :: remove_reference <atype> :: type> :: value> :: type * = nullptr> static inline void execute(type & that, atype && argument)
-    {
-      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1], std :: forward <__ngc_array_traits__ <atype> :: type> (argument[__ngc_array_traits__ <type> :: size - 1]));
-    }
+    template <typename type, typename atype, typename std :: enable_if <std :: is_array <typename std :: remove_reference <atype> :: type> :: value> :: type * = nullptr> static inline void execute(type & that, atype && argument);
   };
 
   template <size_t index, bool dummy> struct iterator
@@ -219,11 +204,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
 
       \param that The array to construct.
     */
-    template <typename type> static inline void execute(type & that)
-    {
-      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1 - index]);
-      iterator <index - 1, false> :: execute(that);
-    }
+    template <typename type> static inline void execute(type & that);
 
     /**
       \brief Calls the parametric \c __ngc_constructor__ \c :: \c execute on a
@@ -234,11 +215,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
       \param argument The argument to the last array element's constructor.
       \param arguments... The following arguments in the initialization list.
     */
-    template <typename type, typename atype, typename... atypes, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument, atypes && ... arguments)
-    {
-      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1 - index], std :: forward <atype> (argument));
-      iterator <index - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
-    }
+    template <typename type, typename atype, typename... atypes, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument, atypes && ... arguments);
 
     /**
       \brief Calls the parametric \c __ngc_constructor__ \c :: \c execute on a
@@ -248,11 +225,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
       \param that The array to construct.
       \param argument The initialization array.
     */
-    template <typename type, typename atype, typename std :: enable_if <std :: is_array <typename std :: remove_reference <atype> :: type> :: value> :: type * = nullptr> static inline void execute(type & that, atype && argument)
-    {
-      __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1 - index], std :: forward <__ngc_array_traits__ <atype> :: type> (argument[__ngc_array_traits__ <type> :: size - 1 - index]));
-      iterator <index - 1, false> :: execute(that, argument);
-    }
+    template <typename type, typename atype, typename std :: enable_if <std :: is_array <typename std :: remove_reference <atype> :: type> :: value> :: type * = nullptr> static inline void execute(type & that, atype && argument);
   };
 
   /**
@@ -263,10 +236,7 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
     \param arguments... The arguments to the initialization (either null, or
     an initialization list, or an array).
   */
-  template <typename type, typename... atypes> static inline void execute(type & that, atypes && ... arguments)
-  {
-    iterator <__ngc_array_traits__ <type> :: size - 1, false> :: execute(that, arguments...);
-  }
+  template <typename type, typename... atypes> static inline void execute(type & that, atypes && ... arguments);
 };
 
 /**
@@ -315,9 +285,6 @@ template <bool is_class> struct __ngc_constructor__ <true, is_class>
   \version 0.0.1
   \date Jul 14, 2016
 */
-template <typename type, typename... atypes> static inline void __ngc_construct__(type & that, atypes && ... arguments)
-{
-  __ngc_constructor__ <std :: is_array <type> :: value, std :: is_class <typename __ngc_array_traits__ <type> :: type> :: value> :: execute(that, std :: forward <atypes> (arguments)...);
-}
+template <typename type, typename... atypes> inline void __ngc_construct__(type & that, atypes && ... arguments);
 
 #endif
