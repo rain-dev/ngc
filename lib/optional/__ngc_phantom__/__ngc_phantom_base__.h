@@ -100,10 +100,7 @@ template <typename type> struct __ngc_phantom_base__
 
     \return A reference to the object stored in the phantom.
   */
-  inline type & __ngc_embody__()
-  {
-    return reinterpret_cast <type &> (*this);
-  }
+  inline type & __ngc_embody__();
 
   /**
     \brief Embodiment function for \c __ngc_phantom_base__, returns a const
@@ -118,10 +115,7 @@ template <typename type> struct __ngc_phantom_base__
 
     \return A const reference to the object stored in the phantom.
   */
-  inline const type & __ngc_embody__() const
-  {
-    return reinterpret_cast <const type &> (*this);
-  }
+  inline const type & __ngc_embody__() const;
 };
 
 #endif

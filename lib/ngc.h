@@ -50,5 +50,6 @@
 #include "optional/__ngc_factory__/__ngc_initializer__.hpp"
 
 #include "optional/__ngc_phantom__/__ngc_embody__.hpp"
+#include "optional/__ngc_phantom__/__ngc_phantom_base__.hpp"
 
 #endif
