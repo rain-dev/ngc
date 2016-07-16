@@ -47,5 +47,6 @@
 /* Implementations */
 
 #include "optional/__ngc_factory__/__ngc_constructor__.hpp"
+#include "optional/__ngc_factory__/__ngc_initializer__.hpp"
 
 #endif

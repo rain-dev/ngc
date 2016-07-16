@@ -258,10 +258,7 @@ template <typename type> struct __ngc_initializer__
       \param member The member to be initialized.
       \param arguments... The arguments to \c member constructor.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
-    {
-      __ngc_construct__(member, std :: forward <atypes> (arguments)...);
-    }
+    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
   };
 
   template <size_t back, bool dummy> struct back_step
@@ -273,10 +270,7 @@ template <typename type> struct __ngc_initializer__
       \param argument The argument to be removed.
       \param arguments... The arguments to forward to the next \c back_step.
     */
-    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments)
-    {
-      back_step <back - 1, false> :: execute(member, std :: forward <atypes> (arguments)...);
-    }
+    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments);
   };
 
   /**
@@ -313,10 +307,7 @@ template <typename type> struct __ngc_initializer__
       \param member The member to be initialized.
       \param arguments... The arguments to be forwarded to \c back_step.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
-    {
-      back_step <back, false> :: execute(member, std :: forward <atypes> (arguments)...);
-    }
+    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
   };
 
   template <size_t rotate, size_t back> struct rotate_step
@@ -328,10 +319,7 @@ template <typename type> struct __ngc_initializer__
       \param argument The argument to be moved at the end of the arguments list.
       \param arguments... The remaining arguments.
     */
-    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments)
-    {
-      rotate_step <rotate - 1, back> :: execute(member, std :: forward <atypes> (arguments)..., std :: forward <atype> (argument));
-    }
+    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments);
   };
 
   /**
@@ -372,10 +360,7 @@ template <typename type> struct __ngc_initializer__
       \param member The member to be initialized.
       \param arguments... The arguments to be forwarded to \c rotate_step.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
-    {
-      rotate_step <rotate, back> :: execute(member, std :: forward <atypes> (arguments)...);
-    }
+    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
   };
 
   template <size_t front, size_t rotate, size_t back> struct front_step
@@ -387,10 +372,7 @@ template <typename type> struct __ngc_initializer__
       \param argument The argument to be removed.
       \param arguments... The argument on which to recur.
     */
-    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments)
-    {
-      front_step <front - 1, rotate, back> :: execute(member, std :: forward <atypes> (arguments)...);
-    }
+    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments);
   };
 
   /**
@@ -434,11 +416,7 @@ template <typename type> struct __ngc_initializer__
         \param arguments... The initialization list arguments to be filtered
         against the arguments range.
       */
-      template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
-      {
-        typedef arguments_range <name, __ngc_parameter_pack__ <atypes...>> range;
-        front_step <range :: beg + 1, range :: end - range :: beg - 1, sizeof...(atypes) - range :: end> :: execute(member, std :: forward <atypes> (arguments)...);
-      }
+      template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
     };
 
     /**
@@ -464,11 +442,7 @@ template <typename type> struct __ngc_initializer__
     in the initialization arguments list: if so, it calls the
     \c parametric_initializer, otherwise it calls the \c default_initializer.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
-    {
-      typedef arguments_range <name, __ngc_parameter_pack__ <atypes...>> range;
-      std :: conditional <range :: found, parametric_initializer, default_initializer> :: type :: execute(member, std :: forward <atypes> (arguments)...);
-    }
+    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
   };
 
   /**
@@ -495,10 +469,7 @@ template <typename type> struct __ngc_initializer__
       \param that The object to be initialized.
       \param arguments... The initialization arguments.
     */
-    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
-    {
-      member_initializer <typename type :: template __ngc_member__ <0, false> :: name> :: execute(type :: template __ngc_member__ <0, false> :: get(that), std :: forward <atypes> (arguments)...);
-    }
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
 
   template <size_t index, bool dummy> struct member_iterator
@@ -510,11 +481,7 @@ template <typename type> struct __ngc_initializer__
       \param that The object to be initialized.
       \param arguments... The initialization arguments.
     */
-    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
-    {
-      member_iterator <index - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
-      member_initializer <typename type :: template __ngc_member__ <index, false> :: name> :: execute(type :: template __ngc_member__ <index, false> :: get(that), std :: forward <atypes> (arguments)...);
-    }
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
 
   /**
@@ -528,9 +495,7 @@ template <typename type> struct __ngc_initializer__
   */
   struct null_iterator
   {
-    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
-    {
-    }
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
 };
 
@@ -582,9 +547,6 @@ template <typename type> struct __ngc_initializer__
   \verison 0.0.1
   \date Jul 16, 2016
 */
-template <typename type, typename... atypes> static inline void __ngc_initialize__(type & that, atypes && ... arguments)
-{
-  std :: conditional <(__ngc_member_count__ <type> :: value > 0), typename __ngc_initializer__ <type> :: template member_iterator <__ngc_member_count__ <type> :: value - 1, false>, typename __ngc_initializer__ <type> :: null_iterator> :: type :: execute(that, std :: forward <atypes> (arguments)...);
-}
+template <typename type, typename... atypes> inline void __ngc_initialize__(type & that, atypes && ... arguments);
 
 #endif
