@@ -393,10 +393,47 @@ template <typename type> struct __ngc_initializer__
     }
   };
 
+  /**
+    \class member_initializer
+    \brief Provided with a member name, initializes the member by appropriately
+    selecting the arguments from the initialization arguments, or by calling
+    the default constructor if the name does not appear in the initialization
+    arguments.
+
+    \c member_initializer serves the purpose to initialize a member. Provided
+    with a string containing the member name, it will use \c arguments_range
+    to determine wether or not the member name appears among the initialization
+    arguments. If so, it calls \c front_step to select the arguments based on
+    the range determined by \c arguments_range and to forward them to an
+    appropriate call to \c __ngc_construct__ on the member. If the name of the
+    member is not found on the initialization arguments list, then the default
+    \c __ngc_construct__ is called on the member.
+
+    \param name The name of the member to be initialized.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 16, 2016
+  */
   template <typename name> struct member_initializer
   {
+    /**
+      \class parametric_initializer
+      \brief Calls \c front_step on the member, thus forwarding to
+      \c __ngc_construct__ the appropriate arguments range determined by
+      \c arguments_range.
+    */
     struct parametric_initializer
     {
+      /**
+        \brief Calls \c front_step on the member and the arguments, with a
+        number of steps determined by \c arguments_range, so that the arguments
+        for \c __ngc_construct__ are those specified in the initialization
+        arguments list.
+        \param member The member to be initialized.
+        \param arguments... The initialization list arguments to be filtered
+        against the arguments range.
+      */
       template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
       {
         typedef arguments_range <name, __ngc_parameter_pack__ <atypes...>> range;
@@ -404,14 +441,29 @@ template <typename type> struct __ngc_initializer__
       }
     };
 
+    /**
+      \class default_initializer
+      \brief Calls the default \c __ngc_construct__ on a member.
+    */
     struct default_initializer
     {
+      /**
+        \brief Calls the default \c __ngc_construct__ on a member.
+        \param member The member to be constructed.
+        \arguments... The arguments in the initialization arguments list (they
+        are ignored).
+      */
       template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
       {
         __ngc_construct__(member);
       }
     };
 
+    /**
+    \brief Uses \c arguments_range to determine wether or not \c name appears
+    in the initialization arguments list: if so, it calls the
+    \c parametric_initializer, otherwise it calls the \c default_initializer.
+    */
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
     {
       typedef arguments_range <name, __ngc_parameter_pack__ <atypes...>> range;
@@ -419,10 +471,30 @@ template <typename type> struct __ngc_initializer__
     }
   };
 
+  /**
+    \class member_iterator
+    \brief Iterates through all the members in the object and calls
+    \c member_initializer on all of them, providing them with the initialization
+    arguments list.
+
+    \param index The index of the member to initialize.
+    \dummy A dummy boolean parameter.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 16, 2016
+  */
   template <size_t index, bool dummy> struct member_iterator;
 
   template <bool dummy> struct member_iterator <0, dummy>
   {
+    /**
+      \brief Provided with an object and an initialization arguments list, it
+      initializes the first member in the object as stated in the initialization
+      list.
+      \param that The object to be initialized.
+      \param arguments... The initialization arguments.
+    */
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
     {
       member_initializer <typename type :: template __ngc_member__ <0, false> :: name> :: execute(type :: template __ngc_member__ <0, false> :: get(that), std :: forward <atypes> (arguments)...);
@@ -431,6 +503,13 @@ template <typename type> struct __ngc_initializer__
 
   template <size_t index, bool dummy> struct member_iterator
   {
+    /**
+      \brief Provided with an object and an initialization arguments list, it
+      recurs on the next \c member_iterator then initializes the member at
+      \c index position in the object as stated in the initialization list.
+      \param that The object to be initialized.
+      \param arguments... The initialization arguments.
+    */
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
     {
       member_iterator <index - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
@@ -438,6 +517,15 @@ template <typename type> struct __ngc_initializer__
     }
   };
 
+  /**
+    \class null_iterator
+    \brief An iterator placeholder for objects that have no members, or
+    primitives.
+
+    \author Matteo Monti [matteo.monti@rain.vg]
+    \version 0.0.1
+    \date Jul 16, 2016
+  */
   struct null_iterator
   {
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments)
@@ -446,6 +534,54 @@ template <typename type> struct __ngc_initializer__
   };
 };
 
+/**
+  \fn __ngc_initialize__
+  \brief Initializes an object's members with the given initialization list.
+
+  \c __ngc_initialize__ needs to be provided with an object to initialize and
+  an initialization list. An initialization list is a string-separated list
+  of parameters to the constructors, where the strings refer to the name of
+  each member whose constructor needs to be called.
+
+  \c __ngc_initialize__ works by looping over all the members in the object,
+  then looking for each member's name in the initialization list. If the name
+  is not found, then a default call to \c __ngc_construct__ is issued on the
+  member. Otherwise, the arguments relative to the initialization of the member
+  are forwarded to a call to a parametric \c __ngc_construct__ on the member.
+
+  Example usage:
+
+  \code
+  class otherclass
+  {
+    otherclass(int, double, char);
+  };
+
+  class myclass
+  {
+    int i;
+    otherclass j;
+    double w;
+  };
+
+  // After parser parses myclass ..
+
+  myclass m;
+  __ngc_initialize__(m, ngc :: string <'w'> {}, 42.42, ngc :: string <'j'> {}, 12, 2.22, 'q'); // Calls a default constructor on m.i, then initializes m.j and m.w with the arguments provided. (Note that the order of the initialization list is irrelevant to the initialization order.)
+  __ngc_initialize__(m); // All default constructors.
+  __ngc_initialize__(m, ngc :: string <'i'> {}, ngc :: string <'w'> {}, 42.42, ngc :: string <'j'> {}, 12, 2.22, 'q'); // Still a default constructor on m.i
+  __ngc_initialize__(m, ngc :: string <'i'> {}, 5, ngc :: string <'w'> {}, 42.42, ngc :: string <'j'> {}, 12, 2.22, 'q'); // Parametric constructor on all terms.
+  \endcode
+
+  All implementations of member \c __ngc_construct__ will always begin with a
+  call to \c __ngc_initialize__.
+
+  \see reference/optional/reference.md
+
+  \author Matteo Monti [matteo.monti@rain.vg]
+  \verison 0.0.1
+  \date Jul 16, 2016
+*/
 template <typename type, typename... atypes> static inline void __ngc_initialize__(type & that, atypes && ... arguments)
 {
   std :: conditional <(__ngc_member_count__ <type> :: value > 0), typename __ngc_initializer__ <type> :: template member_iterator <__ngc_member_count__ <type> :: value - 1, false>, typename __ngc_initializer__ <type> :: null_iterator> :: type :: execute(that, std :: forward <atypes> (arguments)...);
