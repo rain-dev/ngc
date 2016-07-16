@@ -447,6 +447,16 @@ public interface NGCListener extends ParseTreeListener {
 	 */
 	void exitExpression(NGCParser.ExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link NGCParser#ngc_optionalunpackexpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterNgc_optionalunpackexpression(NGCParser.Ngc_optionalunpackexpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NGCParser#ngc_optionalunpackexpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitNgc_optionalunpackexpression(NGCParser.Ngc_optionalunpackexpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link NGCParser#constantexpression}.
 	 * @param ctx the parse tree
 	 */
@@ -466,6 +476,16 @@ public interface NGCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStatement(NGCParser.StatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NGCParser#ngc_optionalguardstatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterNgc_optionalguardstatement(NGCParser.Ngc_optionalguardstatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NGCParser#ngc_optionalguardstatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitNgc_optionalguardstatement(NGCParser.Ngc_optionalguardstatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NGCParser#labeledstatement}.
 	 * @param ctx the parse tree
@@ -536,6 +556,16 @@ public interface NGCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCondition(NGCParser.ConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NGCParser#ngc_optionalcondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterNgc_optionalcondition(NGCParser.Ngc_optionalconditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NGCParser#ngc_optionalcondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitNgc_optionalcondition(NGCParser.Ngc_optionalconditionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NGCParser#iterationstatement}.
 	 * @param ctx the parse tree
@@ -646,6 +676,16 @@ public interface NGCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSimpledeclaration(NGCParser.SimpledeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NGCParser#ngc_optionaldeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterNgc_optionaldeclaration(NGCParser.Ngc_optionaldeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NGCParser#ngc_optionaldeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitNgc_optionaldeclaration(NGCParser.Ngc_optionaldeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NGCParser#static_assertdeclaration}.
 	 * @param ctx the parse tree
@@ -1406,6 +1446,16 @@ public interface NGCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBraceorequalinitializer(NGCParser.BraceorequalinitializerContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NGCParser#ngc_optionaldefaultinitializer}.
+	 * @param ctx the parse tree
+	 */
+	void enterNgc_optionaldefaultinitializer(NGCParser.Ngc_optionaldefaultinitializerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NGCParser#ngc_optionaldefaultinitializer}.
+	 * @param ctx the parse tree
+	 */
+	void exitNgc_optionaldefaultinitializer(NGCParser.Ngc_optionaldefaultinitializerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NGCParser#initializerclause}.
 	 * @param ctx the parse tree

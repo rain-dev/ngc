@@ -3038,4 +3038,70 @@ public class NGC2CPPListener implements NGCListener
 		//TODO
 		this.walker.setInspectChild(true);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNgc_optionalunpackexpression(NGCParser.Ngc_optionalunpackexpressionContext ctx) { }
+	/**
+ 	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNgc_optionalunpackexpression(NGCParser.Ngc_optionalunpackexpressionContext ctx) { }
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNgc_optionalguardstatement(NGCParser.Ngc_optionalguardstatementContext ctx) { }
+	/**
+ 	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNgc_optionalguardstatement(NGCParser.Ngc_optionalguardstatementContext ctx) { }
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNgc_optionalcondition(NGCParser.Ngc_optionalconditionContext ctx) { }
+	/**
+ 	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNgc_optionalcondition(NGCParser.Ngc_optionalconditionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNgc_optionaldeclaration(NGCParser.Ngc_optionaldeclarationContext ctx) { }
+	/**
+ 	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNgc_optionaldeclaration(NGCParser.Ngc_optionaldeclarationContext ctx) { }
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNgc_optionaldefaultinitializer(NGCParser.Ngc_optionaldefaultinitializerContext ctx) { }
+	/**
+ 	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNgc_optionaldefaultinitializer(NGCParser.Ngc_optionaldefaultinitializerContext ctx) { }
+	
 }

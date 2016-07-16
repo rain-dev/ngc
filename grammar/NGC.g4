@@ -272,6 +272,7 @@ shiftexpression
 	additiveexpression
 	| shiftexpression '<<' additiveexpression
 	| shiftexpression rightShift additiveexpression
+  | shiftexpression '<<' ngc_optionalunpackexpression
 ;
 
 relationalexpression
@@ -352,6 +353,13 @@ expression
 :
 	assignmentexpression
 	| expression ',' assignmentexpression
+  | ngc_optionalunpackexpression
+;
+
+ngc_optionalunpackexpression
+:
+  unqualifiedid '!'
+  | qualifiedid '!'
 ;
 
 constantexpression
@@ -369,6 +377,12 @@ statement
 	| attributespecifierseq? jumpstatement
 	| declarationstatement
 	| attributespecifierseq? tryblock
+  | ngc_optionalguardstatement
+;
+
+ngc_optionalguardstatement
+:
+  Guard '(' assignmentexpression ')' statement
 ;
 
 labeledstatement
@@ -413,6 +427,13 @@ condition
 	expression
 	| attributespecifierseq? declspecifierseq declarator '=' initializerclause
 	| attributespecifierseq? declspecifierseq declarator bracedinitlist
+  | ngc_optionalcondition
+;
+
+ngc_optionalcondition
+:
+  unqualifiedid '?'
+  | qualifiedid '?'
 ;
 
 iterationstatement
@@ -495,6 +516,13 @@ simpledeclaration
 :
 	declspecifierseq? initdeclaratorlist? ';'
 	| attributespecifierseq declspecifierseq? initdeclaratorlist ';'
+  | ngc_optionaldeclaration
+;
+
+ngc_optionaldeclaration
+:
+  declspecifierseq? '?' initdeclaratorlist? ';'
+  | attributespecifierseq declspecifierseq? '?' initdeclaratorlist ';'
 ;
 
 static_assertdeclaration
@@ -975,6 +1003,12 @@ braceorequalinitializer
 :
 	'=' initializerclause
 	| bracedinitlist
+  | ngc_optionaldefaultinitializer
+;
+
+ngc_optionaldefaultinitializer
+:
+  '=' assignmentexpression '??' primaryexpression
 ;
 
 initializerclause
@@ -1045,6 +1079,7 @@ memberdeclaration
 	| templatedeclaration
 	| aliasdeclaration
 	| emptydeclaration
+  | ngc_optionaldeclaration
 ;
 
 memberdeclaratorlist
@@ -1474,6 +1509,11 @@ Friend
 Goto
 :
 	'goto'
+;
+
+Guard
+:
+	'guard'
 ;
 
 If
