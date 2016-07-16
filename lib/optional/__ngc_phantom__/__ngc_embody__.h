@@ -109,19 +109,13 @@ template <> struct __ngc_conditional_embodier__ <true>
     \brief Returns a reference to \c that.__ngc_embody__().
     \param that The object to embody.
   */
-  template <typename type> static inline auto & execute(type & that)
-  {
-      return that.__ngc_embody__();
-  }
+  template <typename type> static inline auto & execute(type & that);
 
   /**
     \brief Returns a const reference to \c that.__ngc_embody__().
     \param that The object to embody.
   */
-  template <typename type> static inline const auto & execute(const type & that)
-  {
-      return that.__ngc_embody__();
-  }
+  template <typename type> static inline const auto & execute(const type & that);
 };
 
 template <> struct __ngc_conditional_embodier__ <false>
@@ -130,19 +124,13 @@ template <> struct __ngc_conditional_embodier__ <false>
     \brief Returns a reference to \c that.
     \param that The object to embody.
   */
-    template <typename type> static inline auto & execute(type & that)
-    {
-        return that;
-    }
+    template <typename type> static inline auto & execute(type & that);
 
     /**
     \brief Returns a const reference to \c that.
     \param that The object to embody.
   */
-  template <typename type> static inline const auto & execute(const type & that)
-  {
-      return that;
-  }
+  template <typename type> static inline const auto & execute(const type & that);
 };
 
 /**
@@ -166,10 +154,7 @@ template <> struct __ngc_conditional_embodier__ <false>
   \version 0.0.1
   \date Jul 11, 2016
 */
-template <typename type> auto & __ngc_embody__(type & that)
-{
-  return __ngc_conditional_embodier__ <__ngc_can_embody__ <type> :: value> :: execute(that);
-}
+template <typename type> auto & __ngc_embody__(type & that);
 
 /**
   \fn __ngc_embody__
@@ -192,9 +177,6 @@ template <typename type> auto & __ngc_embody__(type & that)
   \version 0.0.1
   \date Jul 11, 2016
 */
-template <typename type> const auto & __ngc_embody__(const type & that)
-{
-  return __ngc_conditional_embodier__ <__ngc_can_embody__ <type> :: value> :: execute(that);
-}
+template <typename type> const auto & __ngc_embody__(const type & that);
 
 #endif
