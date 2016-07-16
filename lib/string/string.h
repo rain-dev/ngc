@@ -66,7 +66,7 @@ namespace ngc
       is determined by the \c char values in its template specialization, no
       operation needs to be carried out by this constructor.
     */
-    constexpr string() {}
+    constexpr string();
 
     /**
       \brief Constexpr concatenation operator for \c string.
@@ -78,10 +78,7 @@ namespace ngc
       \param that The string to be concatenated to \c this \c string.
       \return The concatenated string.
     */
-    template <char... rchars> string <chars..., rchars...> constexpr operator + (string <rchars...> that)
-    {
-      return string <chars..., rchars...> {};
-    }
+    template <char... rchars> constexpr string <chars..., rchars...> operator + (string <rchars...> that);
 
     /**
       \brief Constexpr casting operator to \c const \c char \c * for \c string.
@@ -95,10 +92,7 @@ namespace ngc
       parameter in C++ 17 dialect. Please use -std=c++1z to compile the
       Angular C core library (see reference).
     */
-    constexpr operator const char * ()
-    {
-      return value;
-    }
+    constexpr operator const char * () const;
   };
 
   template <char... chars> constexpr const char string <chars...> :: value[];

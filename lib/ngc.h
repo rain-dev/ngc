@@ -52,4 +52,6 @@
 #include "optional/__ngc_phantom__/__ngc_embody__.hpp"
 #include "optional/__ngc_phantom__/__ngc_phantom_base__.hpp"
 
+#include "string/string.hpp"
+
 #endif
