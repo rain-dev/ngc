@@ -158,4 +158,41 @@ This issue will be addressed by systematically adding to every class a mechanism
 
 ### `__ngc_construct__`
 
-A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately copied. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names). The body of the `__ngc_construct__` method will contain the body of the corresponding constructor, prefaced by a call to a member initializer. A member initializer (see later) is a structure that processes member initialization lists by calling parametric and / or default constructors, depending on what was specified on the initialization list.
+A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately copied. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names). The body of the `__ngc_construct__` method will contain the body of the corresponding constructor, prefaced by a call to a member initializer.
+
+Mimicing default constructors will not be responsibility of the parser. At the level of the parser, it is impossible to determine wether or not a class is default constructible. This mechanism will rather be implemented at the level of the function `__ngc_construct__` (see later).
+
+A member initializer (see later) is a function that processes member initialization lists by calling parametric and / or default constructors, depending on what was specified on the initialization list.
+
+Since only classes can have constructors implemented, primitive types will not have an `__ngc_construct__` method. A proxy for a call to `__ngc_construct__` methods or primitive initialization, or array initialization, is therefore needed.
+
+In the library we implement a template `__ngc_construct__` function that, provided with an arbitrary object or array and a list of arguments, will construct the object appropriately:
+
+ * If the object is a primitive, the argument to the `__ngc_construct__` call will be assigned to the object.
+ * If the object is a primitive array, the arguments to the `__ngc_construct__` call will be treated as an initialization list, or if only one array argument is present, the copy `__ngc_construct__` will be called on each of the corresponding elements in the arrays.
+ * If the object is a class object, then all the parameters in the call to `__ngc_construct__` will be forwarded to its `__ngc_construct__` method.
+ * If the object is a class array, then the arguments to the `__ngc_construct__` call will be treated as an initialization list, or if only one array argument is present, the copy `__ngc_construct__` will be called on each of the corresponding elements in the arrays.
+
+For example, all the following calls are legal:
+
+```c++
+class myclass
+{
+  myclass(char);
+  myclass(int, double, char);
+};
+
+// After the parser parses myclass
+
+int i;
+myclass m;
+
+__ngc_construct__(i); // No operation is carried out
+__ngc_construct__(i, 12); // Assignment to primitive
+__ngc_construct__(m); // Call to __ngc_construct__() on m
+__ngc_construct__(m, 'q'); // Call to __ngc_construct__(char) on m
+__ngc_construct__(m, 3, 4.42, 'w'); // Call to __ngc_construct__(int, double, char) on m
+
+```
+
+For further reference, see `lib/optional/__ngc_factory__/__ngc_constructor__.h`.
