@@ -11,7 +11,7 @@ export CLASSPATH=".:/path/to/antlr-4.5.3-complete.jar:$CLASSPATH"
 ```
 or add the flag
 ```
--classpath /path/to/antlr-4.5.3-complete.jar
+-classpath ".:/path/to/antlr-4.5.3-complete.jar"
 ```
 to the following javac command
 
