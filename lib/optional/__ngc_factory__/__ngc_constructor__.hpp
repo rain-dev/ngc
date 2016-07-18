@@ -20,9 +20,19 @@ template <typename type, typename atype> inline void __ngc_constructor__ <false,
   that = std :: forward <atype> (argument);
 }
 
-template <typename type, typename... atypes> inline void __ngc_constructor__ <false, true> :: execute(type & that, atypes && ... arguments)
+template <typename type, typename std :: enable_if <__ngc_constructor__ <false, true> :: is_ngc_default_constructible <type> :: value> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that)
 {
-  that.__ngc_construct__(std :: forward <atypes> (arguments)...);
+  that.__ngc_construct__();
+}
+
+template <typename type, typename std :: enable_if <std :: is_default_constructible <type> :: value && !(__ngc_constructor__ <false, true> :: is_ngc_default_constructible <type> :: value)> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that)
+{
+  __ngc_initialize__(that);
+}
+
+template <typename type, typename atype, typename... atypes> inline void __ngc_constructor__ <false, true> :: execute(type & that, atype && argument, atypes && ... arguments)
+{
+  that.__ngc_construct__(std :: forward <atypes> (argument, arguments)...);
 }
 
 template <bool is_class> template <bool dummy> template <typename type> inline void __ngc_constructor__ <true, is_class> :: iterator <0, dummy> :: execute(type & that)

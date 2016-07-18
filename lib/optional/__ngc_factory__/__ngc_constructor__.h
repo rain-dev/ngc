@@ -27,7 +27,7 @@
   \see reference/optional/reference.md
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.1
+  \version 0.0.2
   \date Jul 14, 2016
 */
 
@@ -55,6 +55,13 @@
   initialization, call the object's member \c __ngc_construct__ method or do
   object array initialization depending on the value of its template parameters.
 
+  \c __ngc_constructor__ also accounts for implicit default constructors. When
+  no default constructor is specified, the parser will not produce any
+  \c __ngc_construct__ method. \c __ngc_constructor__ automatically detects it
+  and still calls \c __ngc_initialize__ on the object without any parameter
+  (thus initializing its members in the same way a standard implicit constructor
+  would do).
+
   Please note that the diagnosis on the object is left to the caller of the
   \c execute method. Calling \c execute on the wrong \c __ngc_constructor__ will
   result in an error. See how \c __ngc_construct__ implements the diagnostics
@@ -79,9 +86,9 @@
 
   \see reference/optional/reference.md
 
-  \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.1
-  \date Jul 14, 2016
+  \author Matteo Monti [matteo.monti@rain.vg], Luca Grementieri [luca.grementieri@rain.vg]
+  \version 0.0.2
+  \date Jul 18, 2016
 */
 template <bool is_array, bool is_class> struct __ngc_constructor__;
 
@@ -110,17 +117,93 @@ template <> struct __ngc_constructor__ <false, false>
 template <> struct __ngc_constructor__ <false, true>
 {
   /**
-    \brief Proxy for \c __ngc_construct__ method on an object, constructs the
-    object with the arguments provided.
+    \class is_ngc_default_constructible
+    \brief Determines if a class can be initialized with a call to an explicit
+    default \c __ngc_initialize__().
 
-    Note that no argument can be provided, thus calling the default
-    \c __ngc_construct__ method. Any single class object can be constructed with
-    this method.
+    Class \c is_ngc_default_constructible serves the purpose to detect wether or
+    not an explicit default constructor was specified in the class. It does so
+    by detecting wether or not a call to empty \c __ngc_construct__() is
+    possible.
+
+    Note that \c is_ngc_default_constructible will set its \c value to \c true
+    even if a parametric \c __ngc_construct__ method is exposed that accepts
+    a non-empty list of arguments, but all of which have default values.
+
+    \code
+    class yes
+    {
+      void __ngc_construct__(int = 12, double = 4.44);
+    }
+
+    class no
+    {
+      void __ngc_construct__(int);
+    }
+
+    is_ngc_default_constructible <yes> :: value; // true
+    is_ngc_default_constructible <no> :: value; // false
+    \endcode
+
+    \param type The type to test
+
+    \author Matteo Monti [matteo.monti@rain.vg], Luca Grementieri [luca.grementieri@rain.vg]
+    \version 0.0.1
+    \date Jul 18, 2016
+  */
+  template <typename type> struct is_ngc_default_constructible
+  {
+    template <typename stype, decltype(((stype *) nullptr)->__ngc_construct__()) * = nullptr> struct sfinae /**< This struct exists if a call to \c __ngc_construct__() on a dummy, nullptr-derived stype object returns something (i.e., it exists). */
+    {
+    };
+
+    template <typename stype> static int8_t test(sfinae <stype> *); /**< This call is intercepted if \c __ngc_construct__() can be called. */
+    template <typename stype> static int32_t test(...); /**< Accepts anything, default size if \c sfinae does not exist. */
+
+    static constexpr bool value = (sizeof(test <type> (0)) == sizeof(int8_t)); /**< \c true if a \c type object has an explicit default \c __ngc_construct__() method, \c false otherwise. */
+  };
+
+  /**
+    \brief Proxy for explicit default \c __ngc_construct__ method on an object,
+    constructs the object with no arguments.
+
+    This method will only accept object classes that explicitly expose an
+    \c __ngc_construct__ method that behaves as a default constructor
+    (i.e., no arguments or all arguments with defaults).
+
+    This method only serves as a proxy to a call to \c __ngc_construct__() on
+    the object provided.
+  */
+  template <typename type, typename std :: enable_if <is_ngc_default_constructible <type> :: value> :: type * = nullptr> static inline void execute(type & that);
+
+  /**
+    \brief Proxy for implicit initialization on an object that is default
+    constructible, but has no explicit default \c __ngc_construct__ method
+    specified.
+
+    This method will only accept object classes that are default constructible,
+    but do not expose an \c __ngc_construct__ method that behaves as a default
+    constructor (i.e., no arguments or all arguments with defaults).
+
+    This method will issue a call to \c __ngc_initialize__ on the object,
+    so as to initialize all its members with default calls to
+    \c __ngc_construct__.
+  */
+  template <typename type, typename std :: enable_if <std :: is_default_constructible <type> :: value && !(is_ngc_default_constructible <type> :: value)> :: type * = nullptr> static inline void execute(type & that);
+
+  /**
+    \brief Proxy for parametric \c __ngc_construct__ method on an object,
+    constructs the object with the arguments provided.
+
+    Note that a call with no arguments is not allowed on this \c execute method,
+    and will be intercepted by the default implicit / explitic \c execute
+    methods, see above.
 
     \param that The object to construct.
-    \param arguments... The arguments to its constructor.
+    \param argument The first argument (mandatory).
+    \param arguments... The remaining arguments to its constructor.
   */
-  template <typename type, typename... atypes> static inline void execute(type & that, atypes && ... arguments);
+  template <typename type, typename atype, typename... atypes> static inline void execute(type & that, atype && argument, atypes && ... arguments);
 };
 
 template <bool is_class> struct __ngc_constructor__ <true, is_class>
