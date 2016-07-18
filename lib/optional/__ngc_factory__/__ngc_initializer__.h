@@ -431,10 +431,7 @@ template <typename type> struct __ngc_initializer__
         \arguments... The arguments in the initialization arguments list (they
         are ignored).
       */
-      template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments)
-      {
-        __ngc_construct__(member);
-      }
+      template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
     };
 
     /**

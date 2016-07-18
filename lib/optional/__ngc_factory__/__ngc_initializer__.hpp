@@ -47,6 +47,11 @@ template <typename type> template <typename name> template <typename mtype, type
   front_step <range :: beg + 1, range :: end - range :: beg - 1, sizeof...(atypes) - range :: end> :: execute(member, std :: forward <atypes> (arguments)...);
 }
 
+template <typename type> template <typename name> template <typename mtype, typename... atypes> inline void __ngc_initializer__ <type> :: member_initializer <name> :: default_initializer :: execute(mtype & member, atypes && ... arguments)
+{
+  __ngc_construct__(member);
+}
+
 template <typename type> template <typename name> template <typename mtype, typename... atypes> inline void __ngc_initializer__ <type> :: member_initializer <name> :: execute(mtype & member, atypes && ... arguments)
 {
   typedef arguments_range <name, __ngc_parameter_pack__ <atypes...>> range;
