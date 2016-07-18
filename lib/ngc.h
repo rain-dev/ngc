@@ -17,7 +17,7 @@
 
   The inclusion process is not recursive, i.e., no other partial inclusion entry
   points are included from here, that include other files. All the files are
-  directly included from here.
+  directly included from here. 
 
   \author Matteo Monti [matteo.monti@rain.vg]
   \version 0.0.1
