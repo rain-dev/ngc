@@ -2,7 +2,7 @@
 
 ## General description
 
-An `if <>` construct allows the user to make compile-time if statements to selectively compile portions of the code, depending on compile-time kwnown boolean variables.
+An `if <>` construct allows the user to make compile-time if statements to selectively compile portions of the code, depending on compile-time known boolean variables.
 
 As an example, the following:
 
@@ -65,7 +65,7 @@ template <bool __ngc_0_dummy__> struct __ngc_container__ <0, __ngc_0_dummy__>
 
 The only exception to `__ngc_container__` declaration will be in an `__ngc_container__`. Please note that any nested class to an `__ngc_container__` will still have the declaration injected:
 
-```c++`
+```c++
 template <unsigned long, bool> struct __ngc_container__;
 
 /* ... */
