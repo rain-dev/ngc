@@ -1,0 +1,9 @@
+class myclass
+{
+protected:
+  int i;
+private:
+  double j;
+public:
+  char k;
+}
