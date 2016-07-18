@@ -40,6 +40,16 @@ template <bool is_class> template <bool dummy> template <typename type> inline v
   __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1]);
 }
 
+template <typename type, typename std :: enable_if <__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, type & other)
+{
+  std :: cout << "It has an explicit copy constructor." << std :: endl;
+}
+
+template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value)> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, type & other)
+{
+	std :: cout << "It has an implicit copy constructor." << std :: endl;
+}
+
 template <bool is_class> template <bool dummy> template <typename type, typename atype, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type *> inline void __ngc_constructor__ <true, is_class> :: iterator <0, dummy> :: execute(type & that, atype && argument)
 {
   __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1], std :: forward <atype> (argument));

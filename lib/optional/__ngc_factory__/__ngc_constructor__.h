@@ -192,6 +192,57 @@ template <> struct __ngc_constructor__ <false, true>
   template <typename type, typename std :: enable_if <std :: is_default_constructible <type> :: value && !(is_ngc_default_constructible <type> :: value)> :: type * = nullptr> static inline void execute(type & that);
 
   /**
+    \class is_ngc_copy_constructible
+    \brief Determines if a class can be initialized with a call to an explicit
+    copy constructor \c __ngc_initialize__(type &).
+
+    Class \c is_ngc_copy_constructible serves the purpose to detect wether or
+    not an explicit copy constructor was specified in the class. It does so
+    by detecting wether or not a call to \c __ngc_construct__(type &) is
+    possible.
+
+    \param type The type to test
+
+    \author Matteo Monti [matteo.monti@rain.vg], Luca Grementieri [luca.grementieri@rain.vg]
+    \version 0.0.1
+    \date Jul 18, 2016
+  */
+  template <typename type> struct is_ngc_copy_constructible
+  {
+    template <typename stype, decltype(((stype *) nullptr)->__ngc_construct__(* (stype *) nullptr)) * = nullptr> struct sfinae /**< This struct exists if a call to \c __ngc_construct__(type &) on a dummy, nullptr-derived stype object returns something (i.e., it exists). */
+    {
+    };
+
+    template <typename stype> static int8_t test(sfinae <stype> *); /**< This call is intercepted if \c __ngc_construct__(type &) can be called. */
+    template <typename stype> static int32_t test(...); /**< Accepts anything, default size if \c sfinae does not exist. */
+
+    static constexpr bool value = (sizeof(test <type> (0)) == sizeof(int8_t)); /**< \c true if a \c type object has an explicit copy \c __ngc_construct__(type &) method, \c false otherwise. */
+  };
+
+  /**
+    \brief Proxy for explicit copy \c __ngc_construct__ method on an object,
+	constructs the object by making a copy.
+
+	This method will only accept object classes that explicitly expose an
+    \c __ngc_construct__(type &) method that behaves as a copy constructor.
+
+    This method only serves as a proxy to a call to \c __ngc_construct__(type &)
+	on the object provided.
+  */
+  template <typename type, typename std :: enable_if <is_ngc_copy_constructible <type> :: value> :: type * = nullptr> static inline void execute(type & that, type & other);
+
+  /**
+    \brief Proxy for implicit initialization on an object that is copy
+    constructible, but has no explicit copy \c __ngc_construct__(type &) method
+    specified.
+
+    This method will only accept object classes that are copy constructible,
+    but do not expose an \c __ngc_construct__(type &) method that behaves as a copy
+    constructor.
+  */
+  template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(is_ngc_copy_constructible <type> :: value)> :: type * = nullptr> static inline void execute(type & that, type & other);
+
+  /**
     \brief Proxy for parametric \c __ngc_construct__ method on an object,
     constructs the object with the arguments provided.
 
