@@ -256,24 +256,7 @@ template <> struct __ngc_constructor__ <false, true>
       \param other The object to be copied on \c that.
       \param arguments... The arguments to the initialization of \c that.
     */
-    template <typename type, typename... atypes> static inline void execute(type & that, type & other, atypes && ... arguments);
-
-    /**
-      \brief Last iteration of initialization loop, forwards to
-      \c __ngc_initialize__ all the members in the object to construct.
-
-      Iteration works as a proxy for implicit copy construction of an object
-      that is copy constructible, but has no explicit copy \c __ngc_construct__
-      method specified.
-
-      This method initializes the object \c with \c arguments, whose values
-      result from the iteration of \copy_initializer on the members of \other.
-
-      \param that The object to construct.
-      \param other The object to be copied on \c that.
-      \param arguments... The arguments to the initialization of \c that.
-    */
-    template <typename type, typename... atypes> static inline void execute(type & that, const type & other, atypes && ... arguments);
+    template <typename type, typename otype, typename... atypes, typename std :: enable_if <std :: is_same <typename std :: remove_const <typename std :: remove_reference <otype> :: type> :: type, type> :: value> :: type * = nullptr> static inline void execute(type & that, otype && other, atypes && ... arguments);
   };
 
   template <size_t index, bool dummy> struct copy_initializer
@@ -294,25 +277,7 @@ template <> struct __ngc_constructor__ <false, true>
       \param other The object to be copied on \c that.
       \param arguments... The arguments to the initialization of \c that.
     */
-    template <typename type, typename... atypes> static inline void execute(type & that, type & other, atypes && ... arguments);
-
-    /**
-      \brief Recursively builds a call to \c __ngc_initialize__ on an object
-      with all the member names and values in another object.
-
-      It is used for implicit copy construction (i.e., when all members of an
-      object need to be initialized with the corresponding members of another
-      object).
-
-      This method forwards the parameters \c arguments and the name and the
-      value of the member in position \c index of \other to the next
-      \c copy_initializer.
-
-      \param that The object to construct.
-      \param other The object to be copied on \c that.
-      \param arguments... The arguments to the initialization of \c that.
-    */
-    template <typename type, typename... atypes> static inline void execute(type & that, const type & other, atypes && ... arguments);
+    template <typename type, typename otype, typename... atypes, typename std :: enable_if <std :: is_same <typename std :: remove_const <typename std :: remove_reference <otype> :: type> :: type, type> :: value> :: type * = nullptr> static inline void execute(type & that, otype && other, atypes && ... arguments);
   };
 
   /**
@@ -328,23 +293,7 @@ template <> struct __ngc_constructor__ <false, true>
     \param that The object to construct.
     \param other The object to be copied on \c that.
   */
-  template <typename type, typename std :: enable_if <is_ngc_copy_constructible <type> :: value> :: type * = nullptr> static inline void execute(type & that, type & other);
-
-  /**
-    \brief Proxy for explicit copy \c __ngc_construct__ method on an object,
-	  constructs the object by making a copy.
-
-	  This method will only accept object classes that explicitly expose an
-    \c __ngc_construct__(const \c type \c &) method that behaves as a copy
-    constructor.
-
-    This method only serves as a proxy to a call to \c __ngc_construct__(const
-    \c type \c &) on the object provided.
-
-    \param that The object to construct.
-    \param other The object to be copied on \c that.
-  */
-  template <typename type, typename std :: enable_if <is_ngc_copy_constructible <type> :: value> :: type * = nullptr> static inline void execute(type & that, const type & other);
+  template <typename type, typename otype, typename std :: enable_if <std :: is_same <typename std :: remove_const <typename std :: remove_reference <otype> :: type> :: type, type> :: value && is_ngc_copy_constructible <type> :: value> :: type * = nullptr> static inline void execute(type & that, otype && other);
 
   /**
     \brief Proxy for implicit initialization on an object that is copy
@@ -358,21 +307,7 @@ template <> struct __ngc_constructor__ <false, true>
     \param that The object to construct.
     \param other The object to be copied on \c that.
   */
-  template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(is_ngc_copy_constructible <type> :: value)> :: type * = nullptr> static inline void execute(type & that, type & other);
-
-  /**
-    \brief Proxy for implicit initialization on an object that is copy
-    constructible, but has no explicit copy \c __ngc_construct__(const \c type
-    \c &) method specified.
-
-    This method will only accept object classes that are copy constructible,
-    but do not expose an \c __ngc_construct__(const \c type \c &) method that
-    behaves as a copy constructor.
-
-    \param that The object to construct.
-    \param other The object to be copied on \c that.
-  */
-  template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(is_ngc_copy_constructible <type> :: value)> :: type * = nullptr> static inline void execute(type & that, const type & other);
+  template <typename type, typename otype, typename std :: enable_if <std :: is_same <typename std :: remove_const <typename std :: remove_reference <otype> :: type> :: type, type> :: value && std :: is_copy_constructible <type> :: value && !(is_ngc_copy_constructible <type> :: value)> :: type * = nullptr> static inline void execute(type & that, otype && other);
 
   /**
     \brief Proxy for parametric \c __ngc_construct__ method on an object,
@@ -386,7 +321,7 @@ template <> struct __ngc_constructor__ <false, true>
     \param argument The first argument (mandatory).
     \param arguments... The remaining arguments to its constructor.
   */
-  template <typename type, typename atype, typename... atypes> static inline void execute(type & that, atype && argument, atypes && ... arguments);
+  template <typename type, typename atype, typename... atypes, typename std :: enable_if <!(std :: is_same <typename std :: remove_const <typename std :: remove_reference <atype> :: type> :: type, type> :: value)> :: type * = nullptr> static inline void execute(type & that, atype && argument, atypes && ... arguments);
 };
 
 template <bool is_class> struct __ngc_constructor__ <true, is_class>
