@@ -30,6 +30,46 @@ template <typename type, typename std :: enable_if <std :: is_default_constructi
   __ngc_initialize__(that);
 }
 
+template <bool dummy> template <typename type, typename... atypes> inline void __ngc_constructor__ <false, true> :: copy_initializer <0, dummy> :: execute(type & that, type & other, atypes && ... arguments)
+{
+  __ngc_initialize__(that, std :: forward <atypes> (arguments)..., typename type :: template __ngc_member__ <0, false> :: name {}, type :: template __ngc_member__ <0, false> :: get(other));
+}
+
+template <bool dummy> template <typename type, typename... atypes> inline void __ngc_constructor__ <false, true> :: copy_initializer <0, dummy> :: execute(type & that, const type & other, atypes && ... arguments)
+{
+  __ngc_initialize__(that, std :: forward <atypes> (arguments)..., typename type :: template __ngc_member__ <0, false> :: name {}, type :: template __ngc_member__ <0, false> :: get(other));
+}
+
+template <size_t index, bool dummy> template <typename type, typename... atypes> inline void __ngc_constructor__ <false, true> :: copy_initializer <index, dummy> :: execute(type & that, type & other, atypes && ... arguments)
+{
+  copy_initializer <index - 1, false> :: execute(that, other, std :: forward <atypes> (arguments)..., typename type :: template __ngc_member__ <index, false> :: name {}, type :: template __ngc_member__ <index, false> :: get(other));
+}
+
+template <size_t index, bool dummy> template <typename type, typename... atypes> inline void __ngc_constructor__ <false, true> :: copy_initializer <index, dummy> :: execute(type & that, const type & other, atypes && ... arguments)
+{
+  copy_initializer <index - 1, false> :: execute(that, other, std :: forward <atypes> (arguments)..., typename type :: template __ngc_member__ <index, false> :: name {}, type :: template __ngc_member__ <index, false> :: get(other));
+}
+
+template <typename type, typename std :: enable_if <__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, type & other)
+{
+  that.__ngc_construct__(other);
+}
+
+template <typename type, typename std :: enable_if <__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, const type & other)
+{
+  that.__ngc_construct__(other);
+}
+
+template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value)> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, type & other)
+{
+	copy_initializer <__ngc_member_count__ <type> :: value - 1, false> :: execute(that, other);
+}
+
+template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value)> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, const type & other)
+{
+	copy_initializer <__ngc_member_count__ <type> :: value - 1, false> :: execute(that, other);
+}
+
 template <typename type, typename atype, typename... atypes> inline void __ngc_constructor__ <false, true> :: execute(type & that, atype && argument, atypes && ... arguments)
 {
   that.__ngc_construct__(std :: forward <atypes> (argument, arguments)...);
@@ -38,16 +78,6 @@ template <typename type, typename atype, typename... atypes> inline void __ngc_c
 template <bool is_class> template <bool dummy> template <typename type> inline void __ngc_constructor__ <true, is_class> :: iterator <0, dummy> :: execute(type & that)
 {
   __ngc_constructor__ <false, is_class> :: execute(that[__ngc_array_traits__ <type> :: size - 1]);
-}
-
-template <typename type, typename std :: enable_if <__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, type & other)
-{
-  std :: cout << "It has an explicit copy constructor." << std :: endl;
-}
-
-template <typename type, typename std :: enable_if <std :: is_copy_constructible <type> :: value && !(__ngc_constructor__ <false, true> :: is_ngc_copy_constructible <type> :: value)> :: type *> inline void __ngc_constructor__ <false, true> :: execute(type & that, type & other)
-{
-	std :: cout << "It has an implicit copy constructor." << std :: endl;
 }
 
 template <bool is_class> template <bool dummy> template <typename type, typename atype, typename std :: enable_if <!(std :: is_array <typename std :: remove_reference <atype> :: type> :: value)> :: type *> inline void __ngc_constructor__ <true, is_class> :: iterator <0, dummy> :: execute(type & that, atype && argument)
