@@ -32,6 +32,7 @@
 #include "__ngc_parameter_pack__.h"
 
 #include "introspection/__ngc_member_count__.h"
+#include "introspection/__ngc_base_count__.h"
 
 #include "optional/__ngc_null__.h"
 
