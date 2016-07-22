@@ -46,8 +46,8 @@
   \see reference/string/reference.md
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.6
-  \date Jul 20, 2016
+  \version 0.0.9
+  \date Jul 22, 2016
 */
 
 #ifndef __lib__optional____ngc_factory______ngc_initializer____h
@@ -82,8 +82,8 @@
   \param type The type of the object to initialize.
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.5
-  \date Jul 20, 2016
+  \version 0.0.8
+  \date Jul 22, 2016
 */
 template <typename type> struct __ngc_initializer__
 {
@@ -315,8 +315,8 @@ template <typename type> struct __ngc_initializer__
     \param dummy A dummy boolean parameter.
 
     \author Matteo Monti
-    \version 0.0.1
-    \date Jul 16, 2016
+    \version 0.0.2
+    \date Jul 22, 2016
   */
   template <size_t back, bool dummy> struct back_step;
 
@@ -324,10 +324,10 @@ template <typename type> struct __ngc_initializer__
   {
     /**
       \brief Forwards the arguments to \c __ngc_construct__.
-      \param member The member to be initialized.
+      \param that The object to be initialized.
       \param arguments... The arguments to \c member constructor.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
+    template <typename ttype, typename... atypes> static inline void execute(ttype & that, atypes && ... arguments);
   };
 
   template <size_t back, bool dummy> struct back_step
@@ -335,11 +335,11 @@ template <typename type> struct __ngc_initializer__
     /**
       \brief Removes the first argument from the argument list, then iterates on
       the next \c back_step.
-      \param member The member to be initialized.
+      \param that The object to be initialized.
       \param argument The argument to be removed.
       \param arguments... The arguments to forward to the next \c back_step.
     */
-    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments);
+    template <typename ttype, typename atype, typename... atypes> static inline void execute(ttype & that, atype && argument, atypes && ... arguments);
   };
 
   /**
@@ -364,8 +364,8 @@ template <typename type> struct __ngc_initializer__
     after \c rotate_step is concluded.
 
     \author Matteo Monti
-    \version 0.0.1
-    \date Jul 16, 2016
+    \version 0.0.2
+    \date Jul 22, 2016
   */
   template <size_t rotate, size_t back> struct rotate_step;
 
@@ -373,10 +373,10 @@ template <typename type> struct __ngc_initializer__
   {
     /**
       \brief Forwards the arguments to \c back_step.
-      \param member The member to be initialized.
+      \param that The object to be initialized.
       \param arguments... The arguments to be forwarded to \c back_step.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
+    template <typename ttype, typename... atypes> static inline void execute(ttype & that, atypes && ... arguments);
   };
 
   template <size_t rotate, size_t back> struct rotate_step
@@ -384,11 +384,11 @@ template <typename type> struct __ngc_initializer__
     /**
       \brief Moves the first argument to the end of the arguments list, then
       recurs on the next \c rotate_step.
-      \param member The member to be initialized.
+      \param that The object to be initialized.
       \param argument The argument to be moved at the end of the arguments list.
       \param arguments... The remaining arguments.
     */
-    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments);
+    template <typename ttype, typename atype, typename... atypes> static inline void execute(ttype & that, atype && argument, atypes && ... arguments);
   };
 
   /**
@@ -417,8 +417,8 @@ template <typename type> struct __ngc_initializer__
     \c back_step after \c rotate_step is concluded.
 
     \author Matteo Monti
-    \version 0.0.1
-    \date Jul 16, 2016
+    \version 0.0.2
+    \date Jul 22, 2016
   */
   template <size_t front, size_t rotate, size_t back> struct front_step;
 
@@ -426,10 +426,10 @@ template <typename type> struct __ngc_initializer__
   {
     /**
       \brief Forwards the arguments to \c rotate_step.
-      \param member The member to be initialized.
+      \param that The object to be initialized.
       \param arguments... The arguments to be forwarded to \c rotate_step.
     */
-    template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
+    template <typename ttype, typename... atypes> static inline void execute(ttype & object, atypes && ... arguments);
   };
 
   template <size_t front, size_t rotate, size_t back> struct front_step
@@ -437,11 +437,11 @@ template <typename type> struct __ngc_initializer__
     /**
       \brief Removes the first argument from the arguments list, then recurs
       on the next \c front_step.
-      \param member The member to be initialized.
+      \param that The object to be initialized.
       \param argument The argument to be removed.
       \param arguments... The argument on which to recur.
     */
-    template <typename mtype, typename atype, typename... atypes> static inline void execute(mtype & member, atype && argument, atypes && ... arguments);
+    template <typename ttype, typename atype, typename... atypes> static inline void execute(ttype & that, atype && argument, atypes && ... arguments);
   };
 
   /**

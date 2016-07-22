@@ -11,34 +11,34 @@
 #ifndef __lib__optional____ngc_factory______ngc_initializer____hpp
 #define __lib__optional____ngc_factory______ngc_initializer____hpp
 
-template <typename type> template <bool dummy> template <typename mtype, typename... atypes> inline void __ngc_initializer__ <type> :: back_step <0, dummy> :: execute(mtype & member, atypes && ... arguments)
+template <typename type> template <bool dummy> template <typename ttype, typename... atypes> inline void __ngc_initializer__ <type> :: back_step <0, dummy> :: execute(ttype & that, atypes && ... arguments)
 {
-  __ngc_construct__(member, std :: forward <atypes> (arguments)...);
+  __ngc_construct__(that, std :: forward <atypes> (arguments)...);
 }
 
-template <typename type> template <size_t back, bool dummy> template <typename mtype, typename atype, typename... atypes> inline void __ngc_initializer__ <type> :: back_step <back, dummy> :: execute(mtype & member, atype && argument, atypes && ... arguments)
+template <typename type> template <size_t back, bool dummy> template <typename ttype, typename atype, typename... atypes> inline void __ngc_initializer__ <type> :: back_step <back, dummy> :: execute(ttype & that, atype && argument, atypes && ... arguments)
 {
-  back_step <back - 1, false> :: execute(member, std :: forward <atypes> (arguments)...);
+  back_step <back - 1, false> :: execute(that, std :: forward <atypes> (arguments)...);
 }
 
-template <typename type> template <size_t back> template <typename mtype, typename... atypes> inline void __ngc_initializer__ <type> :: rotate_step <0, back> :: execute(mtype & member, atypes && ... arguments)
+template <typename type> template <size_t back> template <typename ttype, typename... atypes> inline void __ngc_initializer__ <type> :: rotate_step <0, back> :: execute(ttype & that, atypes && ... arguments)
 {
-  back_step <back, false> :: execute(member, std :: forward <atypes> (arguments)...);
+  back_step <back, false> :: execute(that, std :: forward <atypes> (arguments)...);
 }
 
-template <typename type> template <size_t rotate, size_t back> template <typename mtype, typename atype, typename... atypes> inline void __ngc_initializer__ <type> :: rotate_step <rotate, back> :: execute(mtype & member, atype && argument, atypes && ... arguments)
+template <typename type> template <size_t rotate, size_t back> template <typename ttype, typename atype, typename... atypes> inline void __ngc_initializer__ <type> :: rotate_step <rotate, back> :: execute(ttype & that, atype && argument, atypes && ... arguments)
 {
-  rotate_step <rotate - 1, back> :: execute(member, std :: forward <atypes> (arguments)..., std :: forward <atype> (argument));
+  rotate_step <rotate - 1, back> :: execute(that, std :: forward <atypes> (arguments)..., std :: forward <atype> (argument));
 }
 
-template <typename type> template <size_t rotate, size_t back> template <typename mtype, typename... atypes> inline void __ngc_initializer__ <type> :: front_step <0, rotate, back> :: execute(mtype & member, atypes && ... arguments)
+template <typename type> template <size_t rotate, size_t back> template <typename ttype, typename... atypes> inline void __ngc_initializer__ <type> :: front_step <0, rotate, back> :: execute(ttype & that, atypes && ... arguments)
 {
-  rotate_step <rotate, back> :: execute(member, std :: forward <atypes> (arguments)...);
+  rotate_step <rotate, back> :: execute(that, std :: forward <atypes> (arguments)...);
 }
 
-template <typename type> template <size_t front, size_t rotate, size_t back> template <typename mtype, typename atype, typename... atypes> inline void __ngc_initializer__ <type> :: front_step <front, rotate, back> :: execute(mtype & member, atype && argument, atypes && ... arguments)
+template <typename type> template <size_t front, size_t rotate, size_t back> template <typename ttype, typename atype, typename... atypes> inline void __ngc_initializer__ <type> :: front_step <front, rotate, back> :: execute(ttype & that, atype && argument, atypes && ... arguments)
 {
-  front_step <front - 1, rotate, back> :: execute(member, std :: forward <atypes> (arguments)...);
+  front_step <front - 1, rotate, back> :: execute(that, std :: forward <atypes> (arguments)...);
 }
 
 template <typename type> template <typename name> template <typename mtype, typename... atypes> inline void __ngc_initializer__ <type> :: member_initializer <name> :: parametric_initializer :: execute(mtype & member, atypes && ... arguments)
