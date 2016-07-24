@@ -162,7 +162,7 @@ A `void __ngc_construct__()` method will be added to each class to resemble each
 
 Mimicing default constructors will not be responsibility of the parser. At the level of the parser, it is impossible to determine wether or not a class is default constructible. This mechanism will rather be implemented at the level of the function `__ngc_construct__` (see later).
 
-A member initializer (see later) is a function that processes member initialization lists by calling parametric and / or default constructors, depending on what was specified on the initialization list.
+A member initializer (see later) is a function that processes member initialization lists by calling parametric and / or default constructors on base classes and members of an object, depending on what was specified on the initialization list.
 
 Since only classes can have constructors implemented, primitive types will not have an `__ngc_construct__` method. A proxy for a call to `__ngc_construct__` methods or primitive initialization, or array initialization, is therefore needed.
 
@@ -196,3 +196,73 @@ __ngc_construct__(m, 3, 4.42, 'w'); // Call to __ngc_construct__(int, double, ch
 ```
 
 For further reference, see `lib/optional/__ngc_factory__/__ngc_constructor__.h`.
+
+### Initializers
+
+Before entering the actual body of a constructor, the execution flow first goes through the constructors of all base classes and members in the object, so that when the constructor is actually called, everything is ready to be used. This behavior needs therefore to be mimicked by the `__ngc_construct__` method in each object.
+
+Base classes and member initialization needs to take into account initialization lists, that can be specified before the opening braces of the constructor body. All the base classes and members that are not specified in the initialization list need, however, to have their default constructor called.
+
+As constructor declaration and implementations can be separate, and since there is no way for the parser to trace back the class to which the constructor belongs, most of the initialization logic is delegated to the C++ library.
+
+#### `__ngc_initialize__`
+
+Introspection allows us to loop through members and base classes in a given class. Making use of this feature, it is possible for the C++ library to loop through all the base classes and members in the object that needs to be initialized, and call constructors on them.
+
+A way to encode initialization lists in the call to the initialization is however needed, since constructors need to be called only once, and the default constructors must be called only in case the initialization list does not specify anything else for that base class or member.
+
+`__ngc_initialize__` is a function in the library that serves the purpose to loop through the base classes and members of an object and, depending on a variadic set of arguments, call the appropriate constructor for each base class and member.
+
+`__ngc_initialize__` accepts as first argument the object to be initialized, followed by a separated list of arguments to each of the constructors. Accepted separators are `ngc :: string` strings containing the name of the member to be initialized, or `__ngc_initializer__ <type> :: type_separator <btype>` type separators. An `ngc :: string` will always introduce the arguments to the constructor of the member which name matches the content of the string. A `__ngc_initializer__ <type> :: type_separator <btype>` will always introduce the arguments to the constructor of the base class `btype` of class `type`.
+
+This way, all the calls to each constructor will be coalesced into only one call to `__ngc_initialize__`. `__ngc_initialize__` will then proceed to loop through all the base classes and members of the objects. For each item that needs to be initialized, it will proceed to determine wether or not its `type_separator` or its name `ngc :: string` appears among the arguments. If the appropriate separator or string appear in the arguments list, then the arguments to the appropriate constructor are selected as those in the range between the separator or name and the next separator or name, or the end of the arguments list.
+
+As an example, in the following example:
+
+```c++
+class momclass
+{
+  momclass(int, double, char);
+};
+
+class myclass : public momclass
+{
+  int n;
+  double q;
+
+  myclass() : n(12), momclass(2, 4.44, 'q'), q()
+  {
+  }
+};
+```
+
+the initialization list for `myclass` can be translated into the following call to `__ngc_initialize__`:
+
+```c++
+__ngc_initialize__(ngc :: string <'n'> {}, 12, __ngc_initializer__ <myclass> :: type_separator <momclass> {}, 2, 4.44, 'q', ngc :: string <'q'> {});
+```
+
+In the above call, the arguments to the constructor for member `n` are preceeded by an `ngc :: string <'n'> {}` object, those for `momclass` base class are preceeded by an `__ngc_initializer__ <myclass> :: type_separator <momclass>` object, and finally the (empty) arguments list for member `q` is introduced by an `ngc :: string <'q'>` object.
+
+For further reference, and details on `__ngc_initialize__` implementation, see `lib/optional/__ngc_factory__/__ngc_initializer__.h`.
+
+#### Member / base class detection
+
+An initialization list is easily detectable by the parser. However, it is still impossible for the parser to determine wether each term of the initialization list refers to a member and which to a base class. Base classes and members, however, are completely different C++ constructs: a peculiar detection mechanism was carefully designed to determine wether a name refers to a type or an object.
+
+It makes use of an `__ngc_type_probe__` (for further reference, see `lib/optional/__ngc_factory__/__ngc_type_probe__.h`). As far as `__ngc_type_probe__` usage is concerned, it will be sufficient to say that, be `name` a name, then
+
+```c++
+decltype((name) * __ngc_type_probe__ {});
+```
+
+Is `void` if `name` is an object, and it is `name` if `name` is a class. Please be advised that the parentheses around `name` are mandatory. Now, we are able to detect wether a specifier refers to a member or a base class, and we can proceed to form a sound call to the initializer by separating the arguments with proper specializations of `__ngc_initializer__ <type> :: wrap_separator`.
+
+`wrap_separator` is a template that accepts a type `wtype` and a fallback string type `name`. If `wtype` is `void`, then `wrap_separator <wtype, name> :: stype` is `name`, otherwise it is `wtype`. This can be used as a tool to form calls to `__ngc_initialize__`. Following from the `myclass` example above, the parser will translate the initialization list in the constructor of `myclass` to
+
+```c++
+__ngc_initialize__(
+  typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((n) * __ngc_type_probe__ {}), ngc :: string <'n'> {}> :: stype {}, 12, typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((momclass) * __ngc_type_probe__ {}), ngc :: string <'m', 'o', 'm', 'c', 'l', 'a', 's', 's'> {}> :: stype {}, 2, 4.44, 'q', typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((q) * __ngc_type_probe__ {}), ngc :: string <'q'> {}> :: stype {});
+```
+
+Note how the above does not depend on anything but the syntax in the initialization list.
