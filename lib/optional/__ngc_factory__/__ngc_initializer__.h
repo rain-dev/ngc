@@ -564,19 +564,19 @@ template <typename type> struct __ngc_initializer__
     */
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
-  
+
   template <size_t index, bool dummy> struct base_iterator;
-  
+
   template <bool dummy> struct base_iterator <0, dummy>
   {
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
-  
+
   template <size_t index, bool dummy> struct base_iterator
   {
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
-  
+
   /**
     \class null_iterator
     \brief An iterator placeholder for objects that have no members, or
