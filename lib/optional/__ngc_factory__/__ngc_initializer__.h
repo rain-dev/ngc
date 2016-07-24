@@ -15,19 +15,20 @@
   its service nested classes, and the implementation of \c __ngc_initialize__.
 
   \c __ngc_initializer__ uses introspection and iterators to construct all the
-  members of an object. A call to \c __ngc_initialize__ is always the first call
-  in the \c __ngc_construct__ method of any class. In other words,
-  \c __ngc_initialize__ is used as a delayed version of a member initializer
-  list.
+  members and base classes of an object. A call to \c __ngc_initialize__ is
+  always the first call in the \c __ngc_construct__ method of any class. In
+  other words, \c __ngc_initialize__ is used as a delayed version of a member
+  and base class initializer list.
 
   \c __ngc_initialize__ accepts an arbitrary sequence of arguments made by
-  compile time strings with the names of the members to initialize followed by
-  all the parameters to their constructors.
+  compile time strings with the names of the members to initialize and / or type
+  separators containing the type of base classes followed by all the parameters
+  to each constructor.
 
   For example,
 
   \code
-  myclass() : m1(), m3(1, "hello"), m4(42.42, myobj) {}
+  myclass() : a(), b(1, "hello"), c(42.42, myobj) {}
   \endcode
 
   will translate to a call to
@@ -35,7 +36,7 @@
   \code
   void __ngc_construct__()
   {
-    __ngc_initialize__(*this, ngc :: string <'m', '1'> {}, ngc :: string <'m', '3'> {}, 1, "hello", ngc :: string <'m', '4'> {}, 42.42, myobj);
+    __ngc_initialize__(*this, typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((a) * __ngc_type_probe__ {}), ngc :: string <'a'>> :: stype {}, typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((b) * __ngc_type_probe__ {}), ngc :: string <'b'>> :: stype {}, 1, "hello", typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((c) * __ngc_type_probe__ {}), ngc :: string <'c'>> :: stype {}, 42.42, myobj);
   }
   \endcode
 
@@ -64,6 +65,23 @@
   \c __ngc_initialize__ to function properly. The strategy implemented to
   perform initialization is as follows:
 
+  Base class initialization:
+
+  * \c __ngc_base_count__ is used to determine if the object has any base. If
+  not, no operation is carried out whatsoever by the initializer.
+  * The initializer loops through all the base classes of the object.
+  * The type of each base class is retrieved, and wrapped in a type_separator
+  (see later).
+  * A service class loops through the arguments provided to the initializer,
+  searching for the type separator as an argument to the initializer.
+  * If the type separator is not found among the arguments, a call to the
+  default \c __ngc_construct__ is called on the base class.
+  * Otherwise, the range of arguments between the type separator and either
+  the end of the arguments list or the next separator (either type separator or
+  name string) is forwarded to a call to \c __ngc_construct__ on the base class.
+
+  Member initialization:
+
    * \c __ngc_member_count__ is used to determine if the object has any member.
    If not, no operation is carried out whatsoever by the initializer.
    * The initializer loops through all the members of the object.
@@ -73,8 +91,8 @@
    * If the member is not found among the arguments, a call to the default
    \c __ngc_construct__ is called on the member.
    * Otherwise, the range of arguments between the member name and either the
-   end of the arguments list or the next member name is forwarded to a call to
-   \c __ngc_construct__ on the member.
+   end of the arguments list or the next separator (either type separator or
+   name string) is forwarded to a call to \c __ngc_construct__ on the member.
 
   Each of the steps above is implemented by one specific service nested class
   in \c __ngc_initializer__. See their reference for further details.
@@ -511,18 +529,71 @@ template <typename type> struct __ngc_initializer__
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
   };
 
+  /**
+    \class base_initializer
+    \brief Provided with a type, initializes the base class of that type by
+    appropriately selecting the arguments from the initialization arguments, or
+    by calling the default constructor if the corresponding type separator does
+    not appear in the initialization arguments.
+
+    \c base_initializer serves the purpose to initialize a base class. Provided
+    with the type of the base class, it will use \c arguments_range to determine
+    wether or not the type separator for that base class appears among the
+    initialization arguments. If so, it calls \c front_step to select the
+    arguments based on the range determined by \c arguments_range and to forward
+    them to an appropriate call to \c __ngc_construct__ on the base class. If
+    the type separator for the base class is not found on the initialization
+    arguments list, then the default \c __ngc_construct__ is called on the base
+    class.
+
+    \param btype The type of the base class to be initialized.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 24, 2016
+  */
   template <typename btype> struct base_initializer
   {
+    /**
+      \class parametric_initializer
+      \brief Calls \c front_step on the base class, thus forwarding to
+      \c __ngc_construct__ the appropriate arguments range determined by
+      \c arguments_range.
+    */
     struct parametric_initializer
     {
+      /**
+        \brief Calls \c front_step on the base class and the arguments, with a
+        number of steps determined by \c arguments_range, so that the arguments
+        for \c __ngc_construct__ are those specified in the initialization
+        arguments list.
+        \param base The base class to be initialized.
+        \param arguments... The initialization list arguments to be filtered
+        against the arguments range.
+      */
       template <typename... atypes> static inline void execute(btype & base, atypes && ... arguments);
     };
 
+    /**
+      \class default_initializer
+      \brief Calls the default \c __ngc_construct__ on a base class.
+    */
     struct default_initializer
     {
+      /**
+        \brief Calls the default \c __ngc_construct__ on a base class.
+        \param base The base class to be constructed.
+        \arguments... The arguments in the initialization arguments list (they
+        are ignored).
+      */
       template <typename... atypes> static inline void execute(btype & base, atypes && ... arguments);
     };
 
+    /**
+    \brief Uses \c arguments_range to determine wether or not \c type_separator
+    \c <type> appears in the initialization arguments list: if so, it calls the
+    \c parametric_initializer, otherwise it calls the \c default_initializer.
+    */
     template <typename... atypes> static inline void execute(btype & base, atypes && ... arguments);
   };
 
@@ -565,22 +636,49 @@ template <typename type> struct __ngc_initializer__
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
 
+  /**
+    \class base_iterator
+    \brief Iterates through all the base classes in the object and calls
+    \c base_initializer on all of them, providing them with the initialization
+    arguments list.
+
+    \param index The index of the base class to initialize.
+    \dummy A dummy boolean parameter.
+
+    \author Matteo Monti
+    \version 0.0.1
+    \date Jul 24, 2016
+  */
   template <size_t index, bool dummy> struct base_iterator;
 
   template <bool dummy> struct base_iterator <0, dummy>
   {
+    /**
+      \brief Provided with an object and an initialization arguments list, it
+      initializes the first base class in the object as stated in the
+      initialization list.
+      \param that The object to be initialized.
+      \param arguments... The initialization arguments.
+    */
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
 
   template <size_t index, bool dummy> struct base_iterator
   {
+    /**
+      \brief Provided with an object and an initialization arguments list, it
+      recurs on the next \c base_iterator then initializes the base class at
+      \c index position in the object as stated in the initialization list.
+      \param that The object to be initialized.
+      \param arguments... The initialization arguments.
+    */
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
 
   /**
     \class null_iterator
-    \brief An iterator placeholder for objects that have no members, or
-    primitives.
+    \brief An iterator placeholder for objects that have no members or base
+    classes, or primitives.
 
     \author Matteo Monti [matteo.monti@rain.vg]
     \version 0.0.1
@@ -594,18 +692,21 @@ template <typename type> struct __ngc_initializer__
 
 /**
   \fn __ngc_initialize__
-  \brief Initializes an object's members with the given initialization list.
+  \brief Initializes an object's members and base classes with the given
+  initialization list.
 
   \c __ngc_initialize__ needs to be provided with an object to initialize and
-  an initialization list. An initialization list is a string-separated list
-  of parameters to the constructors, where the strings refer to the name of
-  each member whose constructor needs to be called.
+  an initialization list. An initialization list is a string or type separator
+  separated list of parameters to the constructors, where the strings and type
+  separators refer to the name of each member and the type of each base class
+  whose constructor needs to be called.
 
-  \c __ngc_initialize__ works by looping over all the members in the object,
-  then looking for each member's name in the initialization list. If the name
-  is not found, then a default call to \c __ngc_construct__ is issued on the
-  member. Otherwise, the arguments relative to the initialization of the member
-  are forwarded to a call to a parametric \c __ngc_construct__ on the member.
+  \c __ngc_initialize__ works by looping over all the base classes and members
+  in the object, then looking for each base class type or member's name in the
+  initialization list. If the type separator or name is not found, then a
+  default call to \c __ngc_construct__ is issued on the base class or member.
+  Otherwise, the arguments relative to the initialization of the member are
+  forwarded to a call to a parametric \c __ngc_construct__ on the member.
 
   Example usage:
 
@@ -615,20 +716,19 @@ template <typename type> struct __ngc_initializer__
     otherclass(int, double, char);
   };
 
-  class myclass
+  class myclass : public otherclass
   {
     int i;
-    otherclass j;
     double w;
   };
 
   // After parser parses myclass ..
 
   myclass m;
-  __ngc_initialize__(m, ngc :: string <'w'> {}, 42.42, ngc :: string <'j'> {}, 12, 2.22, 'q'); // Calls a default constructor on m.i, then initializes m.j and m.w with the arguments provided. (Note that the order of the initialization list is irrelevant to the initialization order.)
+  __ngc_initialize__(m, ngc :: string <'w'> {}, 42.42, typename __ngc_initializer__ <myclass> :: template type_separator <otherclass> {}, 12, 2.22, 'q'); // Initializes otherclass base with the arguments provided, then calls the default constructor on m.i (no operation is carried out), then initializes m.w as specified.
   __ngc_initialize__(m); // All default constructors.
-  __ngc_initialize__(m, ngc :: string <'i'> {}, ngc :: string <'w'> {}, 42.42, ngc :: string <'j'> {}, 12, 2.22, 'q'); // Still a default constructor on m.i
-  __ngc_initialize__(m, ngc :: string <'i'> {}, 5, ngc :: string <'w'> {}, 42.42, ngc :: string <'j'> {}, 12, 2.22, 'q'); // Parametric constructor on all terms.
+  __ngc_initialize__(m, ngc :: string <'i'> {}, ngc :: string <'w'> {}, 42.42, typename __ngc_initializer__ <myclass> :: template type_separator <otherclass> {}, 12, 2.22, 'q'); // Still a default constructor on m.i
+  __ngc_initialize__(m, ngc :: string <'i'> {}, 5, ngc :: string <'w'> {}, 42.42, typename __ngc_initializer__ <myclass> :: template type_separator <otherclass> {}, 12, 2.22, 'q'); // Parametric constructor on all terms.
   \endcode
 
   All implementations of member \c __ngc_construct__ will always begin with a
