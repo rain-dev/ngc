@@ -30,8 +30,8 @@
   \see reference/optional/reference.md
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.1
-  \date Jul 22, 2016
+  \version 0.0.2
+  \date Jul 24, 2016
 */
 
 #ifndef __lib__optional____ngc_factory______ngc_type_probe____h
@@ -93,12 +93,12 @@
   \see reference/optional/reference.md
 
   \author Matteo Monti
-  \version 0.0.1
-  \date Jul 22, 2016
+  \version 0.0.2
+  \date Jul 24, 2016
 */
 struct __ngc_type_probe__
 {
-  template <typename type> operator type () const; /**< \c __ngc_type_probe__ can cast to anything. */
+  template <typename type> explicit operator type () const; /**< \c __ngc_type_probe__ can cast to anything. */
   __ngc_type_probe__ operator * () const; /**< When dereferenced, an \c __ngc_type_probe__ will return an \c __ngc_type_probe__. */
 };
 

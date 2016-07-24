@@ -46,8 +46,8 @@
   \see reference/string/reference.md
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.9
-  \date Jul 22, 2016
+  \version 0.0.10
+  \date Jul 24, 2016
 */
 
 #ifndef __lib__optional____ngc_factory______ngc_initializer____h
@@ -82,8 +82,8 @@
   \param type The type of the object to initialize.
 
   \author Matteo Monti [matteo.monti@rain.vg]
-  \version 0.0.8
-  \date Jul 22, 2016
+  \version 0.0.9
+  \date Jul 24, 2016
 */
 template <typename type> struct __ngc_initializer__
 {
@@ -101,10 +101,10 @@ template <typename type> struct __ngc_initializer__
    \param stype The type to be wrapped (i.e., the type of the base class).
 
    \author Matteo Monti [matteo.monti@rain.vg]
-   \version 0.0.1
-   \date Jul 20, 2016
+   \version 0.0.2
+   \date Jul 24, 2016
   */
-  template <typename stype> struct type_separator;
+  template <typename stype> struct type_separator {};
 
   /**
     \class wrap_separator
@@ -511,6 +511,21 @@ template <typename type> struct __ngc_initializer__
     template <typename mtype, typename... atypes> static inline void execute(mtype & member, atypes && ... arguments);
   };
 
+  template <typename btype> struct base_initializer
+  {
+    struct parametric_initializer
+    {
+      template <typename... atypes> static inline void execute(btype & base, atypes && ... arguments);
+    };
+
+    struct default_initializer
+    {
+      template <typename... atypes> static inline void execute(btype & base, atypes && ... arguments);
+    };
+
+    template <typename... atypes> static inline void execute(btype & base, atypes && ... arguments);
+  };
+
   /**
     \class member_iterator
     \brief Iterates through all the members in the object and calls
@@ -549,7 +564,19 @@ template <typename type> struct __ngc_initializer__
     */
     template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
   };
-
+  
+  template <size_t index, bool dummy> struct base_iterator;
+  
+  template <bool dummy> struct base_iterator <0, dummy>
+  {
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
+  };
+  
+  template <size_t index, bool dummy> struct base_iterator
+  {
+    template <typename... atypes> static inline void execute(type & that, atypes && ... arguments);
+  };
+  
   /**
     \class null_iterator
     \brief An iterator placeholder for objects that have no members, or
