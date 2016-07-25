@@ -343,3 +343,9 @@ void myclass :: __ngc_initialize__(double x, char q) : mydouble(x), mybaseclass(
   */
 }
 ```
+
+#### Class - argument conflicts
+
+Function arguments can, in principle, shadow names of members and base classes. However, while actually an argument to the constructor can shadow a member name, this does not affect the member / base class detection. In fact, even if the member name is shadowed (resulting in the argument actually being part of the member / base class detection expression) the member / base class detection expression will still yield `void`, and the member will be rather identified by its name than its type.
+
+On the other hand, it proved to be impossible to shadow the name of a base class in an initializer with an argument to the constructor. Since this behavior is not allowed in C++, we will not invest our forces to detect it and address it.
