@@ -158,7 +158,7 @@ This issue will be addressed by systematically adding to every class a mechanism
 
 ### `__ngc_construct__`
 
-A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately copied. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names). The body of the `__ngc_construct__` method will contain the body of the corresponding constructor, prefaced by a call to a member initializer.
+A `void __ngc_construct__()` method will be added to each class to resemble each constructor in the class. Both the declaration and the implementation will be separately replicated. The arguments to `__ngc_construct__` will be identical to those of the corresponding constructor (same types and names). The body of the `__ngc_construct__` method will contain the body of the corresponding constructor, prefaced by a call to a member initializer.
 
 Mimicing default constructors will not be responsibility of the parser. At the level of the parser, it is impossible to determine wether or not a class is default constructible. This mechanism will rather be implemented at the level of the function `__ngc_construct__` (see later).
 
@@ -239,7 +239,7 @@ class myclass : public momclass
 the initialization list for `myclass` can be translated into the following call to `__ngc_initialize__`:
 
 ```c++
-__ngc_initialize__(ngc :: string <'n'> {}, 12, __ngc_initializer__ <myclass> :: type_separator <momclass> {}, 2, 4.44, 'q', ngc :: string <'q'> {});
+__ngc_initialize__(my_object, ngc :: string <'n'> {}, 12, __ngc_initializer__ <myclass> :: type_separator <momclass> {}, 2, 4.44, 'q', ngc :: string <'q'> {});
 ```
 
 In the above call, the arguments to the constructor for member `n` are preceeded by an `ngc :: string <'n'> {}` object, those for `momclass` base class are preceeded by an `__ngc_initializer__ <myclass> :: type_separator <momclass>` object, and finally the (empty) arguments list for member `q` is introduced by an `ngc :: string <'q'>` object.
@@ -261,8 +261,85 @@ Is `void` if `name` is an object, and it is `name` if `name` is a class. Please 
 `wrap_separator` is a template that accepts a type `wtype` and a fallback string type `name`. If `wtype` is `void`, then `wrap_separator <wtype, name> :: stype` is `name`, otherwise it is `wtype`. This can be used as a tool to form calls to `__ngc_initialize__`. Following from the `myclass` example above, the parser will translate the initialization list in the constructor of `myclass` to
 
 ```c++
-__ngc_initialize__(
-  typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((n) * __ngc_type_probe__ {}), ngc :: string <'n'> {}> :: stype {}, 12, typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((momclass) * __ngc_type_probe__ {}), ngc :: string <'m', 'o', 'm', 'c', 'l', 'a', 's', 's'> {}> :: stype {}, 2, 4.44, 'q', typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((q) * __ngc_type_probe__ {}), ngc :: string <'q'> {}> :: stype {});
+__ngc_initialize__(my_object, typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((n) * __ngc_type_probe__ {}), ngc :: string <'n'> {}> :: stype {}, 12, typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((momclass) * __ngc_type_probe__ {}), ngc :: string <'m', 'o', 'm', 'c', 'l', 'a', 's', 's'> {}> :: stype {}, 2, 4.44, 'q', typename __ngc_initializer__ <myclass> :: template wrap_separator <decltype((q) * __ngc_type_probe__ {}), ngc :: string <'q'> {}> :: stype {});
 ```
 
-Note how the above does not depend on anything but the syntax in the initialization list.
+Note how the above does not depend on anything but the syntax of the initialization list.
+
+### Mimicking constructors
+
+As we earlier said, the parser will replicate every constructor with a symmetric `__ngc_construct__` method. Each constructor declaration will be replicated in-place. Each and every `__ngc_construct__` method will be **public** (we will show later how private constructors can be protected from unwanted access).
+
+Defaulted and deleted constructors will not be followed by any `__ngc_construct__` method.
+
+For example, the following:
+
+```c++
+myclass
+{
+  myclass() = default;
+  myclass(int);
+  myclass(double, char);
+  myclass(const myclass &) = delete;
+};
+```
+
+Will be parsed to
+
+```c++
+myclass
+{
+  myclass() = default();
+  myclass(int);
+public:
+  void __ngc_construct__(int);
+private:
+  myclass(double, char);
+public:
+  void __ngc_construct__(double, char);
+private:
+  myclass(const myclass &) = delete;
+};
+```
+
+All constructors implementations will be followed by an `__ngc_construct__` implementation. Initialization lists will be translated to arguments to `__ngc_initialize__`, which will always be the first call in the `__ngc_construct__` method body.
+
+Arguments to the `__ngc_initialize__` call will be:
+
+* `*this` (the object to initialize)
+
+Followed, for each entry `name (args...)` in the initialization list, by:
+
+* `typename __ngc_initializer__ <decltype(*this)> :: template wrap_separator <decltype((name) * __ngc_type_probe__ {}), ngc :: string <'n', 'a', 'm', 'e'> {}> :: stype {}` (the separator wrapped with autonomous class / object identification)
+* `args...` (the arguments to the constructor for `name`)
+
+So, for example:
+
+```c++
+myclass :: myclass(double x, char q) : mydouble(x), mybaseclass(q)
+{
+  /*
+    Block of instructions here.
+  */
+}
+```
+
+Will be parsed to:
+
+```c++
+myclass :: myclass(double x, char q) : mydouble(x), mybaseclass(q)
+{
+  /*
+    Block of instructions here.
+  */
+}
+
+void myclass :: __ngc_initialize__(double x, char q) : mydouble(x), mybaseclass(q)
+{
+  __ngc_initialize__(*this, typename __ngc_initializer__ <decltype(*this)> :: template wrap_separator <decltype((mydouble) * __ngc_type_probe__ {}), ngc :: string <'m', 'y', 'd', 'o', 'u', 'b', 'l', 'e'> {}> :: stype {}, x, typename __ngc_initializer__ <decltype(*this)> :: template wrap_separator <decltype((mybaseclass) * __ngc_type_probe__ {}), ngc :: string <'m', 'y', 'b', 'a', 's', 'e', 'c', 'l', 'a', 's', 's'> {}> :: stype {}, q);
+
+  /*
+    Block of instructions here.
+  */
+}
+```
