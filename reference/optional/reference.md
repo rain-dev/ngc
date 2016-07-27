@@ -349,3 +349,22 @@ void myclass :: __ngc_initialize__(double x, char q) : mydouble(x), mybaseclass(
 Function arguments can, in principle, shadow names of members and base classes. However, while actually an argument to the constructor can shadow a member name, this does not affect the member / base class detection. In fact, even if the member name is shadowed (resulting in the argument actually being part of the member / base class detection expression) the member / base class detection expression will still yield `void`, and the member will be rather identified by its name than its type.
 
 On the other hand, it proved to be impossible to shadow the name of a base class in an initializer with an argument to the constructor. Since this behavior is not allowed in C++, we will not invest our forces to detect it and address it.
+
+## `__ngc_optional__`
+
+We are finally able to define `__ngc_optional__` classes. In the library (see `lib/optional/__ngc_optional__.h`) it is possibile to find a forward declaration for a template class `__ngc_optional__ <type>`. However, it will not be possible to implement a general version of an optional as a template. This is due to the fact that distinct constructors can be `private` or `public`, and that friendship is not inheritable.
+
+Therefore, the parser will explicitely produce an optional specialization for each class parsed. The optional `type` specialization will include:
+
+* Inheritance from `__ngc_phantom_base__ <type>`.
+* A boolean public value `__ngc_exists__`.
+* A copy of all friends of the original class.
+* A default constructor, which will forward to the `__ngc_null__` constructor for `__ngc_phantom_base__` and set `__ngc_exists__` to `false`.
+* A constructor that accepts an `__ngc_default_type__`, enabled only if `type` is default constructible, which will forward to the `__ngc_null__` constructor for `__ngc_phantom_base__`, then call `__ngc_construct__` on `this->embody()` with no additional parameter, then set `__ngc_exists__` to `true`.
+* A mirror of each parametric constructor in `type` (but with all arguments taken by reference, see later), with coherent `public` and `private` tags. Each of them will forward to the `__ngc_null__` constructor for `__ngc_phantom_base__`, then call `__ngc_construct__` on `this->__ngc_embody__()`, with all the parameters forwarded, and set `__ngc_exists__` to `true`.
+* A parametric constructor that accepts a `type &&`, enabled if and only if `type` is copy constructible, which will forward to the `__ngc_null__` constructor for `__ngc_phantom_base__`, then call `__ngc_construct__` on `this->__ngc_embody__()`, forwarding the argument.
+* A copy constructor for `__ngc_optional__ <type>`, enabled only if `type` is copy constructible. This will set `__ngc_exists__` to `that.__ngc_exists__`, forward to the `__ngc_null__` constructor of `__ngc_phantom_base__`, then if `__ngc_exists__` is `true`, will call `__ngc_construct__` on `this->__ngc_embody__()`, providing as argument `that.__ngc_embody__()`.
+* A `public` mirror of each `__ngc_construct__` method, that calls `__ngc_construct__` on `this->__ngc_embody__()`.
+* An operator `()` for each of the constructors defined above, except for the copy constructor. If `__ngc_exists__` is `true`, operator `()` will first call `__ngc_destruct__` on `this->__ngc_embody__()`, then proceed to set `__ngc_exists__` to `true`, then call `__ngc_construct__` on `this->__ngc_embody__()` to create the object.
+* An assignment operator for other `__ngc_optional__` objects of the same type, enabled only if `type` is copy constructible. If `__ngc_exists__` is `true`, the assignment operator will first call `__ngc_destruct__` on `this->__ngc_embody__()`. Then `this->__ngc_exists__` will be set to `that.__ngc_exists__`, then if `__ngc_exists__` is `true`, the `__ngc_construct__` function will be called on `this->__ngc_embody__()`, with `that.__ngc_embody__()` forwarded as argument.
+* A `public` `__ngc_delete__` method, which, if `__ngc_exists__` is `true`, will call `__ngc_destruct__` on `this->__ngc_embody__()`, then set `__ngc_exists__` to `false`.

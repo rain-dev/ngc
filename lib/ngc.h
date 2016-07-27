@@ -35,6 +35,7 @@
 #include "introspection/__ngc_base_count__.h"
 
 #include "optional/__ngc_null__.h"
+#include "optional/__ngc_optional__.h"
 
 #include "optional/__ngc_factory__/__ngc_array_traits__.h"
 #include "optional/__ngc_factory__/__ngc_type_probe__.h"
