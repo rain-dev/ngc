@@ -40,6 +40,7 @@
 #include "optional/__ngc_factory__/__ngc_array_traits__.h"
 #include "optional/__ngc_factory__/__ngc_type_probe__.h"
 #include "optional/__ngc_factory__/__ngc_constructor__.h"
+#include "optional/__ngc_factory__/__ngc_destructor__.h"
 #include "optional/__ngc_factory__/__ngc_initializer__.h"
 
 #include "optional/__ngc_phantom__/__ngc_embody__.h"
@@ -50,6 +51,7 @@
 /* Implementations */
 
 #include "optional/__ngc_factory__/__ngc_constructor__.hpp"
+#include "optional/__ngc_factory__/__ngc_destructor__.hpp"
 #include "optional/__ngc_factory__/__ngc_initializer__.hpp"
 
 #include "optional/__ngc_phantom__/__ngc_embody__.hpp"
